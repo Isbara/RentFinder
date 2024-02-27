@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
                 .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/company/login", "/company/register", "/h2-console", "/h2-console/**").permitAll()
+                        .requestMatchers("/h2-console", "/h2-console/**").permitAll()
                         .anyRequest().authenticated())
                 .headers((headerauth) -> headerauth
                         .frameOptions((frameopt) -> frameopt.disable()))

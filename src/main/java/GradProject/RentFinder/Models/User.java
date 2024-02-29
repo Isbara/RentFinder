@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Collection;
 import java.util.List;
@@ -26,7 +27,7 @@ public class User implements UserDetails {
     private String name;
     @Column(name = "SURNAME")
     private String surname;
-    @Column(name = "USER_EMAIL", unique = true)
+    @Column(name = "EMAIL", unique = true)
     private String email;
     @Column(name = "PASSWORD")
     private String password;
@@ -37,11 +38,11 @@ public class User implements UserDetails {
     @Column(name = "KARMA")
     private int karmaPoint;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Property> properties;
+    private List<Property> properties = new ArrayList<Property>();
     @OneToMany(mappedBy = "reserver", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Reservation> reservations;
+    private List<Reservation> reservations = new ArrayList<Reservation>();
     @OneToMany(mappedBy = "submitter", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Ticket> tickets;
+    private List<Ticket> tickets = new ArrayList<Ticket>();
     @Enumerated(EnumType.STRING)
     @Column(name="ROLE")
     private Role role;

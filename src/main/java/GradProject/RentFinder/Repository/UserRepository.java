@@ -8,9 +8,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
-    @Query(nativeQuery = true, value = "SELECT * FROM USER_TABLE WHERE USERNAME = :username")
-    Optional<User> findByUsername(@Param("username") String username);
+    @Query(nativeQuery = true, value = "SELECT * FROM COMPANY_TABLE WHERE EMAIL = :email")
+    Optional<User> findByEmail(@Param("email") String email);
 
-
-  //  void deleteByUsername(String username);
+    void deleteByEmail(String email);
 }

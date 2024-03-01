@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "REVIEW_TABLE")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -18,7 +18,7 @@ public class Review extends Comment{
     @Column(name = "ALGO_RESULT")
     private boolean algoResult;
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Respond> respondList;
+    private List<Respond> respondList = new ArrayList<Respond>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PROPERTY_ID")
     @ToString.Exclude

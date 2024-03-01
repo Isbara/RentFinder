@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,9 +41,9 @@ public class Property {
     @Column(name = "OFFERS")
     private String placeOffers;
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<Review>();
     @OneToMany(mappedBy = "reserved", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Reservation> reservations;
+    private List<Reservation> reservations = new ArrayList<Reservation>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     @ToString.Exclude

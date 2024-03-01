@@ -24,7 +24,10 @@ public class SecurityConfig {
         http
                 .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/h2-console", "/h2-console/**", "/property/getProperties" ,"property/addProperty").permitAll()
+
+                        
+                        .requestMatchers("/h2-console", "/h2-console/**", "/user/register", "/user/login", "/property/getProperties" ,"property/addProperty").permitAll()
+
                         .anyRequest().authenticated())
                 .headers((headerauth) -> headerauth
                         .frameOptions((frameopt) -> frameopt.disable()))

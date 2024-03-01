@@ -2,9 +2,11 @@ package GradProject.RentFinder.Mapper;
 
 import GradProject.RentFinder.Models.User;
 import GradProject.RentFinder.RequestModel.UserRequest;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Component
 public class UserMapper {
     public User ConvertToModel(UserRequest request){
         User user = new User();

@@ -29,9 +29,23 @@ public class PropertyController{
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
 
-
-
         return ResponseEntity.ok().body(propertyService.addProperty(property));
     }
+    @DeleteMapping("/deleteProperty/{propertyId}")
+    public ResponseEntity<?> deleteProperty(@PathVariable Long propertyId) {
+        propertyService.deleteProperty(propertyId);
+        return ResponseEntity.ok().body("Property deleted successfully");
+    }
+
+    @PutMapping("/updateProperty/{propertyId}")
+    public ResponseEntity<?> updateProperty(@PathVariable Long propertyId, @Valid @RequestBody Property property, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+        }
+
+
+        return ResponseEntity.ok().body(propertyService.updateProperty(propertyId, property));
+    }
+
 
 }

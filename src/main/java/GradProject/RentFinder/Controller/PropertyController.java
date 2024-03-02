@@ -47,5 +47,13 @@ public class PropertyController{
         return ResponseEntity.ok().body(propertyService.updateProperty(propertyId, property));
     }
 
+    @GetMapping("/getPropertyDetails/{id}")
+    public ResponseEntity<Property> GetPropertyDetails(@RequestHeader(value = "Authorization") String token, @PathVariable Long id){
+        return ResponseEntity.ok().body(propertyService.getPropertyDetails(token, id));
+    }
+    @GetMapping("/getUserProperties")
+    public ResponseEntity<List<Property>> GetUserProperties(@RequestHeader(value = "Authorization") String token){
+        return ResponseEntity.ok().body(propertyService.getUserProperties(token));
+    }
 
 }

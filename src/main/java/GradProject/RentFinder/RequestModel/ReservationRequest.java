@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class ReservationRequest {
     private int numberOfPeople;
-    private java.time.LocalDate startDate;
-    private java.time.LocalDate endDate;
+    private Date startDate;
+    private Date endDate;
 }

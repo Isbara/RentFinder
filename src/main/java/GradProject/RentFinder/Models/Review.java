@@ -9,6 +9,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "REVIEW_TABLE")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

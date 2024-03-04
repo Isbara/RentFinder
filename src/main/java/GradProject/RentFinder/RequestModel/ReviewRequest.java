@@ -11,6 +11,5 @@ import lombok.Setter;
 @Setter
 public class ReviewRequest extends CommentRequest{
     private int userScore;
-    private int algoScore;
     private boolean algoResult;
 }

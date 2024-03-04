@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "RESERVATION_TABLE")
 @Data
@@ -18,9 +20,9 @@ public class Reservation {
     @Column(name = "PEOPLE_COUNT")
     private int numberOfPeople;
     @Column(name = "START_DATE")
-    private java.time.LocalDate startDate;
+    private Date startDate;
     @Column(name = "END_DATE")
-    private java.time.LocalDate endDate;
+    private Date endDate;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     @ToString.Exclude

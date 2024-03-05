@@ -5,7 +5,6 @@ import GradProject.RentFinder.Service.PropertyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,11 +22,8 @@ public class PropertyController{
         return ResponseEntity.ok().body(propertyService.getAllProperties());
     }
     @PostMapping("/addProperty")
-    public ResponseEntity<?> addProperty(@Valid @RequestBody Property property, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
+    public ResponseEntity<?> addProperty(@Valid @RequestBody Property property) {
 
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-        }
 
         return ResponseEntity.ok().body(propertyService.addProperty(property));
     }
@@ -38,11 +34,7 @@ public class PropertyController{
     }
 
     @PutMapping("/updateProperty/{propertyId}")
-    public ResponseEntity<?> updateProperty(@PathVariable Long propertyId, @Valid @RequestBody Property property, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-        }
-
+    public ResponseEntity<?> updateProperty(@PathVariable Long propertyId, @Valid @RequestBody Property property) {
 
         return ResponseEntity.ok().body(propertyService.updateProperty(propertyId, property));
     }

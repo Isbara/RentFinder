@@ -1,5 +1,7 @@
 package GradProject.RentFinder.Service;
 
+import GradProject.RentFinder.Exception.AllExceptions;
+import GradProject.RentFinder.Exception.Exceptions;
 import GradProject.RentFinder.Mapper.PropertyMapper;
 import GradProject.RentFinder.Mapper.UserMapper;
 import GradProject.RentFinder.Models.Property;
@@ -8,12 +10,7 @@ import GradProject.RentFinder.Repository.PropertyRepository;
 import GradProject.RentFinder.Repository.UserRepository;
 import GradProject.RentFinder.SecurityConfig.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,10 +51,12 @@ public class PropertyService {
             existingProperty.setDescription(updatedProperty.getDescription());
             existingProperty.setPrice(updatedProperty.getPrice());
             existingProperty.setPlaceOffers(updatedProperty.getPlaceOffers());
+            if(updatedProperty.getAddress().length()<5) // Just for example
+                throw new Exceptions(AllExceptions.ADDRESS_LENGTH);
             propertyRepository.save(existingProperty);
             return("Property is updated");
         } else {
-            return("Property id couldn't be found");
+            throw new Exceptions(AllExceptions.PROPERTY_ID_NOT_FOUND);
         }
 
 

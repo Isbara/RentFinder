@@ -1,9 +1,9 @@
 package GradProject.RentFinder.Exception;
 
-public class Exception extends RuntimeException{
+public class Exceptions extends RuntimeException{
     private final AllExceptions allExceptions;
 
-    public Exception(AllExceptions allExceptions) {
+    public Exceptions(AllExceptions allExceptions) {
         super(allExceptions.getDescription());
         this.allExceptions = allExceptions;
     }

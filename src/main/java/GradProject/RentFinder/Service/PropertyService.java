@@ -51,7 +51,7 @@ public class PropertyService {
             existingProperty.setDescription(updatedProperty.getDescription());
             existingProperty.setPrice(updatedProperty.getPrice());
             existingProperty.setPlaceOffers(updatedProperty.getPlaceOffers());
-            if(updatedProperty.getAddress().length()<5) // Just for example
+            if(updatedProperty.getAddress().length()<5) // Just for example with input values
                 throw new Exceptions(AllExceptions.ADDRESS_LENGTH);
             propertyRepository.save(existingProperty);
             return("Property is updated");

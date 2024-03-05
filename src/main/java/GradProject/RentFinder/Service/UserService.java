@@ -1,5 +1,7 @@
 package GradProject.RentFinder.Service;
 
+import GradProject.RentFinder.Exception.AllExceptions;
+import GradProject.RentFinder.Exception.Exceptions;
 import GradProject.RentFinder.Mapper.UserMapper;
 import GradProject.RentFinder.Models.Role;
 import GradProject.RentFinder.Models.User;
@@ -49,7 +51,7 @@ public class UserService {
             return "The new user is created successfully.";
         }
         else{
-            return "Email already exists!";
+             throw new Exceptions(AllExceptions.EMAIL_EXISTS);
         }
     }
 
@@ -64,5 +66,21 @@ public class UserService {
         else{
             return new AuthResponse("Invalid email or password");
         }
+    }
+
+    public User UserDetails(Long id)
+    {
+        Optional<User> optionalUser = userRepository.findById(id);
+        User new_user;
+        if(optionalUser.isPresent()){
+            new_user = userMapper.ConvertOptional(optionalUser);
+        }
+        else
+        {
+            throw new Exceptions(AllExceptions.USER_ID_NOT_FOUND);
+        }
+        return new_user;
+
+
     }
 }

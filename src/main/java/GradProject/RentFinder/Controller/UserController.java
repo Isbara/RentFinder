@@ -1,9 +1,11 @@
 package GradProject.RentFinder.Controller;
 
+import GradProject.RentFinder.Models.User;
 import GradProject.RentFinder.RequestModel.UserRequest;
 import GradProject.RentFinder.SecurityConfig.AuthResponse;
 import GradProject.RentFinder.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,5 +24,13 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> Login(@RequestBody UserRequest user) {
         return ResponseEntity.ok().body(userService.Login(user));
+    }
+    @GetMapping("/getUserDetails/{id}")
+    public ResponseEntity<User> getUserDetails(@PathVariable Long id)
+    {
+        User userDetails=userService.UserDetails(id);
+
+        return ResponseEntity.ok().body(userDetails);
+
     }
 }

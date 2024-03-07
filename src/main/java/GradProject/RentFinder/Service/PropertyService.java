@@ -8,8 +8,11 @@ import GradProject.RentFinder.Models.Property;
 import GradProject.RentFinder.Models.User;
 import GradProject.RentFinder.Repository.PropertyRepository;
 import GradProject.RentFinder.Repository.UserRepository;
+import GradProject.RentFinder.RequestModel.PropertyRequest;
 import GradProject.RentFinder.SecurityConfig.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,9 +33,9 @@ public class PropertyService {
         return propertyRepository.findAll();
     }
 
-    public Property addProperty(Property property){
-        // Inputlarla ilgili daha çok kısıtlama buraya eklenebilir
-        return propertyRepository.save(property);}
+    public Property addProperty(PropertyRequest propertyRequest){
+        Property propertyModel=propertyMapper.ConvertToModel(propertyRequest);
+        return propertyRepository.save(propertyModel);}
 
     public void deleteProperty(Long propertyId)
     {
@@ -40,19 +43,12 @@ public class PropertyService {
 
     }
 
-    public String updateProperty(Long propertyId, Property updatedProperty){
+    public String updateProperty(Long propertyId, PropertyRequest updatedProperty){
 
         Optional<Property> existingPropertyOptional = propertyRepository.findById(propertyId);
         if (existingPropertyOptional.isPresent()) {
             Property existingProperty = existingPropertyOptional.get();
-            existingProperty.setPropertyType(updatedProperty.getPropertyType());
-            existingProperty.setFlatNo(updatedProperty.getFlatNo());
-            existingProperty.setAddress(updatedProperty.getAddress());
-            existingProperty.setDescription(updatedProperty.getDescription());
-            existingProperty.setPrice(updatedProperty.getPrice());
-            existingProperty.setPlaceOffers(updatedProperty.getPlaceOffers());
-            if(updatedProperty.getAddress().length()<5) // Just for example with input values
-                throw new Exceptions(AllExceptions.ADDRESS_LENGTH);
+            PropertyMapper.UpdateConvertOptional(existingProperty,updatedProperty);
             propertyRepository.save(existingProperty);
             return("Property is updated");
         } else {
@@ -83,7 +79,7 @@ public class PropertyService {
             return propertyMapper.ConvertOptional(optionalProperty);
         }
         else{
-            return new Property(); //değişecek.
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
         }
     }
 

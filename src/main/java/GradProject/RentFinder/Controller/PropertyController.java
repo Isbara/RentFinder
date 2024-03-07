@@ -1,6 +1,7 @@
 package GradProject.RentFinder.Controller;
 
 import GradProject.RentFinder.Models.Property;
+import GradProject.RentFinder.RequestModel.PropertyRequest;
 import GradProject.RentFinder.Service.PropertyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,10 @@ public class PropertyController{
         return ResponseEntity.ok().body(propertyService.getAllProperties());
     }
     @PostMapping("/addProperty")
-    public ResponseEntity<?> addProperty(@Valid @RequestBody Property property) {
+    public ResponseEntity<?> addProperty(@Valid @RequestBody PropertyRequest propertyRequest) {
 
 
-        return ResponseEntity.ok().body(propertyService.addProperty(property));
+        return ResponseEntity.ok().body(propertyService.addProperty(propertyRequest));
     }
     @DeleteMapping("/deleteProperty/{propertyId}")
     public ResponseEntity<?> deleteProperty(@PathVariable Long propertyId) {
@@ -34,9 +35,9 @@ public class PropertyController{
     }
 
     @PutMapping("/updateProperty/{propertyId}")
-    public ResponseEntity<?> updateProperty(@PathVariable Long propertyId, @Valid @RequestBody Property property) {
+    public ResponseEntity<?> updateProperty(@PathVariable Long propertyId, @Valid @RequestBody PropertyRequest propertyRequest) {
 
-        return ResponseEntity.ok().body(propertyService.updateProperty(propertyId, property));
+        return ResponseEntity.ok().body(propertyService.updateProperty(propertyId, propertyRequest));
     }
 
     @GetMapping("/getPropertyDetails/{id}")

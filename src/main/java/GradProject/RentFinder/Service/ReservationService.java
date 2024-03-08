@@ -1,5 +1,7 @@
 package GradProject.RentFinder.Service;
 
+import GradProject.RentFinder.Exception.AllExceptions;
+import GradProject.RentFinder.Exception.Exceptions;
 import GradProject.RentFinder.Mapper.PropertyMapper;
 import GradProject.RentFinder.Mapper.ReservationMapper;
 import GradProject.RentFinder.Mapper.UserMapper;
@@ -13,6 +15,7 @@ import GradProject.RentFinder.RequestModel.ReservationRequest;
 import GradProject.RentFinder.SecurityConfig.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +36,14 @@ public class ReservationService {
         String username = jwtService.extractUsername(jwt);
         Optional<User> optionalUser = userRepository.findByEmail(username);
         User user;
-        if(optionalUser.isPresent()){
+        if(optionalUser.isPresent()){ //Checking user
             user = userMapper.ConvertOptional(optionalUser);
         }
         else{
             return new Reservation(); //değişecek.
         }
         boolean validity =jwtService.isTokenValid(jwt, user);
-        if(validity){
+        if(validity){ //Checking token
             Reservation reservation = reservationMapper.ConvertToModel(request);
             reservation.setReserver(user);
             Property property = propertyMapper.ConvertOptional(propertyRepository.findById(id));
@@ -70,5 +73,27 @@ public class ReservationService {
         else{
             return new ArrayList<Reservation>(); //değişecek.
         }
+    }
+    public Boolean ValidateReservation(Long reservationId) {
+        Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
+
+        return optionalReservation.isPresent();
+    }
+    public void MakeDecision(Long reservationId,Boolean decision)
+    {
+        try{
+            reservationRepository.makeDecision(reservationId,decision);
+        }
+        catch (Exception e)
+        {
+            throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public Boolean ValidateProperty(Long propertyId)
+    {
+        Optional<Property> optionalProperty=propertyRepository.findById(propertyId);
+        return optionalProperty.isPresent();
+
     }
 }

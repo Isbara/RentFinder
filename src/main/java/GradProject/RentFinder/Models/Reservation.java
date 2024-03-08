@@ -23,6 +23,8 @@ public class Reservation {
     private Date startDate;
     @Column(name = "END_DATE")
     private Date endDate;
+    @Column(name="STATUS")
+    private Boolean status;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     @ToString.Exclude
@@ -33,4 +35,7 @@ public class Reservation {
     @ToString.Exclude
     @JsonIgnore
     private Property reserved;
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Review review;
+
 }

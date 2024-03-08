@@ -7,7 +7,9 @@ public enum AllExceptions {
     ADDRESS_LENGTH("Adress length must be longer than 4"), // Input specificatıonları burdan da alabiliriz frontendden de- konuşalım
     EMAIL_EXISTS("Email already exists"),
     USER_ID_NOT_FOUND("User id couldn't be found"),
-    TOKEN_EXPIRED("Token is expired");
+    TOKEN_EXPIRED("Token is expired"),
+    RESERVATION_ID_NOT_FOUND("Reservation id couldn't be found"),
+    INTERNAL_SERVER_ERROR("An error has occured");
 
 
 

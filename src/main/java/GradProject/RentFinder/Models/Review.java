@@ -26,4 +26,8 @@ public class Review extends Comment{
     @ToString.Exclude
     @JsonIgnore
     private Property property;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "RESERVATION_ID")
+    private Reservation reservation;
+
 }

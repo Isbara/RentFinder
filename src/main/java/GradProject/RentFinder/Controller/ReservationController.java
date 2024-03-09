@@ -27,7 +27,7 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservationService.MakeReservation(token, id, request));
     }
 
-    @GetMapping("/getReservation/{id}") //For one user and a specific property
+    @GetMapping("/getReservation/{id}") //Returns user's reservations on the viewed property.
     public ResponseEntity<List<Reservation>> GetReservations(@RequestHeader(value = "Authorization") String token, @PathVariable Long id) {
         if(!reservationService.ValidateProperty(id))
         {
@@ -48,5 +48,8 @@ public class ReservationController {
         return ResponseEntity.ok().body("Decision successfully made");
     }
 
-    @GetMapping("/getAllReservations")
+    @GetMapping("/getAllPropertyReservations")
+    public ResponseEntity<List<Reservation>> GetAllPropertyReservations(@RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(reservationService.GetAllPropertyReservations(token));
+    }
 }

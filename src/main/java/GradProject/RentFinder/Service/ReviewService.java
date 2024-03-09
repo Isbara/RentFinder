@@ -1,5 +1,7 @@
 package GradProject.RentFinder.Service;
 
+import GradProject.RentFinder.Exception.AllExceptions;
+import GradProject.RentFinder.Exception.Exceptions;
 import GradProject.RentFinder.Mapper.*;
 import GradProject.RentFinder.Models.*;
 import GradProject.RentFinder.Repository.*;
@@ -7,6 +9,8 @@ import GradProject.RentFinder.RequestModel.RespondRequest;
 import GradProject.RentFinder.RequestModel.ReviewRequest;
 import GradProject.RentFinder.SecurityConfig.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,26 +35,16 @@ public class ReviewService {
 
 
     public List<Review> GetPropertyReviews(String token, Long id) {
-        String jwt = token.substring(7);
-        String username = jwtService.extractUsername(jwt);
-        Optional<User> optionalUser = userRepository.findByEmail(username);
-        User user;
-        if(optionalUser.isPresent()){
-            user = userMapper.ConvertOptional(optionalUser);
-        }
-        else{
-            return new ArrayList<Review>(); //değişecek.
-        }
-        boolean validity = jwtService.isTokenValid(jwt, user);
-        if(validity){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
             Optional<Property> optionalProperty = propertyRepository.findById(id);
             if(optionalProperty.isPresent())
                 return propertyMapper.ConvertOptional(optionalProperty).getReviews();
             else
-                return new ArrayList<Review>(); //değişecek.
+                throw  new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
         }
         else
-            return new ArrayList<Review>(); //değişecek.
+            throw  new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
 //    public Review WriteReview(String token, Long id, ReviewRequest request) {
@@ -58,18 +52,8 @@ public class ReviewService {
 //    }
 
     public Respond WriteRespond(String token, Long id, RespondRequest request) {
-        String jwt = token.substring(7);
-        String username = jwtService.extractUsername(jwt);
-        Optional<User> optionalUser = userRepository.findByEmail(username);
-        User user;
-        if(optionalUser.isPresent()){
-            user = userMapper.ConvertOptional(optionalUser);
-        }
-        else{
-            return new Respond(); //değişecek
-        }
-        boolean validity = jwtService.isTokenValid(jwt, user);
-        if(validity){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
             Respond respond = respondMapper.ConvertToModel(request);
             respond.setDate(new Date(System.currentTimeMillis()));
             Optional<Review> optionalReview = reviewRepository.findById(id);
@@ -77,11 +61,11 @@ public class ReviewService {
             if(optionalReview.isPresent())
                 review = reviewMapper.ConvertOptional(optionalReview);
             else
-                return new Respond(); //değişecek
+                throw  new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
             respond.setReview(review);
             return respondRepository.save(respond);
         }
         else
-            return new Respond(); //değişecek
+            throw  new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 }

@@ -12,6 +12,8 @@ import GradProject.RentFinder.SecurityConfig.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +29,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
-    public String CreateCompany(UserRequest user){
+    public String CreateUser(UserRequest user){
         List<User> allUsers =userRepository.findAll();
         boolean emailExists = false;
         for(User cUser:allUsers){
@@ -64,7 +66,7 @@ public class UserService {
             return new AuthResponse(jwtToken);
         }
         else{
-            return new AuthResponse("Invalid email or password");
+            throw  new Exceptions(AllExceptions.WRONG_CREDENTIALS);
         }
     }
 
@@ -82,5 +84,46 @@ public class UserService {
         return new_user;
 
 
+    }
+
+    public String UpdateUser(String token, UserRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user;
+            if(optionalUser.isPresent())
+                user = userMapper.ConvertOptional(optionalUser);
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            user.setName(request.getName());
+            user.setSurname(request.getSurname());
+            user.setEmail(request.getEmail());
+            user.setPassword(request.getPassword());
+            user.setPhoneNumber(request.getPhoneNumber());
+            user.setDateOfBirth(request.getDateOfBirth());
+            userRepository.save(user);
+            return "User details were updated successfully";
+        }
+        else
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
+    }
+
+    public String DeleteUser(String token) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.isAuthenticated()) {
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user;
+            if (optionalUser.isPresent())
+                user = userMapper.ConvertOptional(optionalUser);
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            userRepository.deleteById(user.getUserID());
+            return "The profile was deleted successfully";
+        } else
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 }

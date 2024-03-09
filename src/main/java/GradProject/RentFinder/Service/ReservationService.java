@@ -14,8 +14,9 @@ import GradProject.RentFinder.Repository.UserRepository;
 import GradProject.RentFinder.RequestModel.ReservationRequest;
 import GradProject.RentFinder.SecurityConfig.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,47 +33,41 @@ public class ReservationService {
     private final PropertyRepository propertyRepository;
     private final PropertyMapper propertyMapper;
     public Reservation MakeReservation(String token, Long id, ReservationRequest request) {
-        String jwt = token.substring(7);
-        String username = jwtService.extractUsername(jwt);
-        Optional<User> optionalUser = userRepository.findByEmail(username);
-        User user;
-        if(optionalUser.isPresent()){ //Checking user
-            user = userMapper.ConvertOptional(optionalUser);
-        }
-        else{
-            return new Reservation(); //değişecek.
-        }
-        boolean validity =jwtService.isTokenValid(jwt, user);
-        if(validity){ //Checking token
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user;
+            if(optionalUser.isPresent())
+                user = userMapper.ConvertOptional(optionalUser);
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
             Reservation reservation = reservationMapper.ConvertToModel(request);
             reservation.setReserver(user);
             Property property = propertyMapper.ConvertOptional(propertyRepository.findById(id));
             reservation.setReserved(property);
             return reservationRepository.save(reservation);
         }
-        else{
-            return new Reservation(); // değişecek.
-        }
+        else
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
     public List<Reservation> GetReservations(String token, Long id) {
-        String jwt = token.substring(7);
-        String username = jwtService.extractUsername(jwt);
-        Optional<User> optionalUser = userRepository.findByEmail(username);
-        User user;
-        if(optionalUser.isPresent()){
-            user = userMapper.ConvertOptional(optionalUser);
-        }
-        else{
-            return new ArrayList<Reservation>(); //değişecek.
-        }
-        boolean validity =jwtService.isTokenValid(jwt, user);
-        if(validity){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user;
+            if(optionalUser.isPresent())
+                user = userMapper.ConvertOptional(optionalUser);
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
             return reservationRepository.findByIDs(user.getUserID(), id);
         }
-        else{
-            return new ArrayList<Reservation>(); //değişecek.
-        }
+        else
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
     public Boolean ValidateReservation(Long reservationId) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
@@ -95,5 +90,26 @@ public class ReservationService {
         Optional<Property> optionalProperty=propertyRepository.findById(propertyId);
         return optionalProperty.isPresent();
 
+    }
+
+    public List<Reservation> GetAllPropertyReservations(String token) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user;
+            ArrayList<Reservation> ReservationList = new ArrayList<Reservation>();
+            if(optionalUser.isPresent())
+                user = userMapper.ConvertOptional(optionalUser);
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            for (Property property:user.getProperties()) {
+                ReservationList.addAll(property.getReservations());//This loop and return can be changed based on front-end development stage!!!
+            }
+            return ReservationList;
+        }
+        else
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 }

@@ -5,7 +5,6 @@ import GradProject.RentFinder.RequestModel.UserRequest;
 import GradProject.RentFinder.SecurityConfig.AuthResponse;
 import GradProject.RentFinder.Service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +17,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<String> CreateUser(@RequestBody UserRequest user) {
-        return ResponseEntity.ok().body(userService.CreateCompany(user));
+        return ResponseEntity.ok().body(userService.CreateUser(user));
     }
 
     @PostMapping("/login")
@@ -31,6 +30,14 @@ public class UserController {
         User userDetails=userService.UserDetails(id);
 
         return ResponseEntity.ok().body(userDetails);
+    }
+    @PutMapping
+    public ResponseEntity<String> UpdateUser(@RequestHeader(value = "Authorization") String token, @RequestBody UserRequest request){
+        return ResponseEntity.ok().body(userService.UpdateUser(token, request));
+    }
 
+    @DeleteMapping
+    public ResponseEntity<String> DeleteUser(@RequestHeader(value = "Authorization") String token){
+        return ResponseEntity.ok().body(userService.DeleteUser(token));
     }
 }

@@ -60,46 +60,30 @@ public class PropertyService {
 
 
     public Property getPropertyDetails(String token, Long id) {
-        //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //if(authentication.isAuthenticated()) {
-        // ilk  validity if versiyonu. Şükrü hocaya sorulacak.
-        String jwt = token.substring(7);
-        String username = jwtService.extractUsername(jwt);
-        Optional<User> optionalUser = userRepository.findByEmail(username);
-        User user;
-        if(optionalUser.isPresent()){
-            user = userMapper.ConvertOptional(optionalUser);
-        }
-        else{
-            return new Property(); //değişecek.
-        }
-        boolean validity =jwtService.isTokenValid(jwt, user);
-        if(validity){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
             Optional<Property> optionalProperty = propertyRepository.findById(id);
             return propertyMapper.ConvertOptional(optionalProperty);
         }
-        else{
+        else
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
-        }
     }
 
     public List<Property> getUserProperties(String token) {
-        String jwt = token.substring(7);
-        String username = jwtService.extractUsername(jwt);
-        Optional<User> optionalUser = userRepository.findByEmail(username);
-        User user;
-        if(optionalUser.isPresent()){
-            user = userMapper.ConvertOptional(optionalUser);
-        }
-        else{
-            return new ArrayList<Property>(); //değişecek.
-        }
-        boolean validity =jwtService.isTokenValid(jwt, user);
-        if(validity){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user;
+            if(optionalUser.isPresent())
+                user = userMapper.ConvertOptional(optionalUser);
+            else
+                throw  new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
             return propertyRepository.findByOwnerID(user.getUserID());
         }
         else{
-            return new ArrayList<Property>(); //değişecek.
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
         }
     }
 }

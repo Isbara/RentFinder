@@ -13,7 +13,6 @@ public class ReservationMapper {
         reservation.setNumberOfPeople(request.getNumberOfPeople());
         reservation.setStartDate(request.getStartDate());
         reservation.setEndDate(request.getEndDate());
-        reservation.setStatus(null);//which means the reservation status is waiting, owner should set it true or false
         return reservation;
     }
     public ReservationRequest ConvertToRequest(Reservation reservation){
@@ -31,6 +30,7 @@ public class ReservationMapper {
         reservation.setEndDate(model.get().getEndDate());
         reservation.setReserver(model.get().getReserver());
         reservation.setReserved(model.get().getReserved());
+        reservation.setStatus(model.get().isStatus());//boolean and Boolean are different. Needs change based on decisions.
         return reservation;
     }
 }

@@ -9,7 +9,8 @@ public enum AllExceptions {
     USER_ID_NOT_FOUND("User id couldn't be found"),
     TOKEN_EXPIRED("Token is expired"),
     RESERVATION_ID_NOT_FOUND("Reservation id couldn't be found"),
-    INTERNAL_SERVER_ERROR("An error has occured");
+    INTERNAL_SERVER_ERROR("An error has occured"),
+    WRONG_CREDENTIALS("Email or password is wrong");
 
 
 

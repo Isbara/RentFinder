@@ -1,6 +1,5 @@
 package GradProject.RentFinder.Controller;
 
-import GradProject.RentFinder.Models.Reservation;
 import GradProject.RentFinder.Models.Respond;
 import GradProject.RentFinder.Models.Review;
 import GradProject.RentFinder.RequestModel.RespondRequest;
@@ -24,10 +23,10 @@ public class ReviewController {
         return ResponseEntity.ok().body(reviewService.GetPropertyReviews(token, id));
     }
 
-//    @PostMapping("/{id}")
-//    public ResponseEntity<Review> WriteReview(@RequestHeader(value = "Authorization") String token, @PathVariable Long id, @RequestBody ReviewRequest request){
-//        return ResponseEntity.ok().body(reviewService.WriteReview(token, id, request));
-//    }
+    @PostMapping("/{propertyID}/{reservationID}")
+    public ResponseEntity<Review> WriteReview(@RequestHeader(value = "Authorization") String token, @PathVariable Long propertyID, @PathVariable Long reservationID, @RequestBody ReviewRequest request){
+        return ResponseEntity.ok().body(reviewService.WriteReview(token, propertyID, reservationID, request));
+    }
 
     @PostMapping("/response/{id}")
     public ResponseEntity<Respond> WriteRespond(@RequestHeader(value = "Authorization") String token, @PathVariable Long id, @RequestBody RespondRequest request){

@@ -13,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -47,9 +46,30 @@ public class ReviewService {
             throw  new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
-//    public Review WriteReview(String token, Long id, ReviewRequest request) {
-//        return null;
-//    }
+    public Review WriteReview(String token, Long propertyID, Long reservationID, ReviewRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
+            Optional<Property> optionalProperty = propertyRepository.findById(propertyID);
+            Property property;
+            if(optionalProperty.isPresent())
+                property = propertyMapper.ConvertOptional(optionalProperty);
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            Optional<Reservation> optionalReservation = reservationRepository.findById(reservationID);
+            Reservation reservation;
+            if(optionalReservation.isPresent())
+                reservation = reservationMapper.ConvertOptional(optionalReservation);
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            Review review = reviewMapper.ConvertToModel(request);
+            review.setDate(new Date(System.currentTimeMillis()));
+            review.setProperty(property);
+            review.setReservation(reservation);
+            return reviewRepository.save(review);
+        }
+        else
+            throw  new Exceptions(AllExceptions.TOKEN_EXPIRED);
+    }
 
     public Respond WriteRespond(String token, Long id, RespondRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -25,6 +25,8 @@ public class Reservation {
     private Date endDate;
     @Column(name="STATUS")
     private boolean status;
+    @Column(name="APPROVAL")
+    private boolean approval;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     @ToString.Exclude

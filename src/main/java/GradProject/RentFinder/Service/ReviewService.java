@@ -49,6 +49,14 @@ public class ReviewService {
     public Review WriteReview(String token, Long propertyID, Long reservationID, ReviewRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.isAuthenticated()){
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user;
+            if(optionalUser.isPresent())
+                user = userMapper.ConvertOptional(optionalUser);
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
             Optional<Property> optionalProperty = propertyRepository.findById(propertyID);
             Property property;
             if(optionalProperty.isPresent())
@@ -65,6 +73,7 @@ public class ReviewService {
             review.setDate(new Date(System.currentTimeMillis()));
             review.setProperty(property);
             review.setReservation(reservation);
+            review.setReviewer(user);
             return reviewRepository.save(review);
         }
         else
@@ -74,6 +83,14 @@ public class ReviewService {
     public Respond WriteRespond(String token, Long id, RespondRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.isAuthenticated()){
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user;
+            if(optionalUser.isPresent())
+                user = userMapper.ConvertOptional(optionalUser);
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
             Respond respond = respondMapper.ConvertToModel(request);
             respond.setDate(new Date(System.currentTimeMillis()));
             Optional<Review> optionalReview = reviewRepository.findById(id);
@@ -83,6 +100,7 @@ public class ReviewService {
             else
                 throw  new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
             respond.setReview(review);
+            respond.setResponder(user);
             return respondRepository.save(respond);
         }
         else

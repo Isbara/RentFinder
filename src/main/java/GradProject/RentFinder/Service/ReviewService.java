@@ -101,7 +101,6 @@ public class ReviewService {
                 throw  new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
             respond.setReview(review);
             respond.setResponder(user);
-            System.out.println("HELP");
             return respondRepository.save(respond);
         }
         else

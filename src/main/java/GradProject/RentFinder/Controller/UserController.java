@@ -24,19 +24,16 @@ public class UserController {
     public ResponseEntity<AuthResponse> Login(@RequestBody UserRequest user) {
         return ResponseEntity.ok().body(userService.Login(user));
     }
-    @GetMapping("/getUserDetails/{id}")
-    public ResponseEntity<User> getUserDetails(@PathVariable Long id)
-    {
-        User userDetails=userService.UserDetails(id);
-
-        return ResponseEntity.ok().body(userDetails);
+    @GetMapping("/getUserDetails")
+    public ResponseEntity<User> getUserDetails(@RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(userService.UserDetails(token));
     }
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<String> UpdateUser(@RequestHeader(value = "Authorization") String token, @RequestBody UserRequest request){
         return ResponseEntity.ok().body(userService.UpdateUser(token, request));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<String> DeleteUser(@RequestHeader(value = "Authorization") String token){
         return ResponseEntity.ok().body(userService.DeleteUser(token));
     }

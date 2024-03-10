@@ -23,10 +23,10 @@ public class PropertyController{
         return ResponseEntity.ok().body(propertyService.getAllProperties());
     }
     @PostMapping("/addProperty")
-    public ResponseEntity<?> addProperty(@Valid @RequestBody PropertyRequest propertyRequest) {
+    public ResponseEntity<?> addProperty(@RequestHeader(value = "Authorization") String token, @RequestBody PropertyRequest request) {
 
 
-        return ResponseEntity.ok().body(propertyService.addProperty(propertyRequest));
+        return ResponseEntity.ok().body(propertyService.addProperty(token, request));
     }
     @DeleteMapping("/deleteProperty/{propertyId}")
     public ResponseEntity<?> deleteProperty(@PathVariable Long propertyId) {
@@ -41,8 +41,8 @@ public class PropertyController{
     }
 
     @GetMapping("/getPropertyDetails/{id}")
-    public ResponseEntity<Property> GetPropertyDetails(@RequestHeader(value = "Authorization") String token, @PathVariable Long id){
-        return ResponseEntity.ok().body(propertyService.getPropertyDetails(token, id));
+    public ResponseEntity<Property> GetPropertyDetails(@PathVariable Long id){
+        return ResponseEntity.ok().body(propertyService.getPropertyDetails(id));
     }
     @GetMapping("/getUserProperties")
     public ResponseEntity<List<Property>> GetUserProperties(@RequestHeader(value = "Authorization") String token){

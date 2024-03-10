@@ -70,20 +70,21 @@ public class UserService {
         }
     }
 
-    public User UserDetails(Long id)
-    {
-        Optional<User> optionalUser = userRepository.findById(id);
-        User new_user;
-        if(optionalUser.isPresent()){
-            new_user = userMapper.ConvertOptional(optionalUser);
+    public User UserDetails(String token) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user;
+            if (optionalUser.isPresent())
+                user = userMapper.ConvertOptional(optionalUser);
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            return user;
         }
         else
-        {
-            throw new Exceptions(AllExceptions.USER_ID_NOT_FOUND);
-        }
-        return new_user;
-
-
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
     public String UpdateUser(String token, UserRequest request) {

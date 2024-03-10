@@ -33,9 +33,24 @@ public class PropertyService {
         return propertyRepository.findAll();
     }
 
-    public Property addProperty(PropertyRequest propertyRequest){
-        Property propertyModel=propertyMapper.ConvertToModel(propertyRequest);
-        return propertyRepository.save(propertyModel);}
+    public Property addProperty(String token, PropertyRequest request){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()) {
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user;
+            if(optionalUser.isPresent())
+                user = userMapper.ConvertOptional(optionalUser);
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            Property property = propertyMapper.ConvertToModel(request);
+            property.setOwner(user);
+            return propertyRepository.save(property);
+        }
+        else
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
+    }
 
     public void deleteProperty(Long propertyId)
     {
@@ -44,7 +59,6 @@ public class PropertyService {
     }
 
     public String updateProperty(Long propertyId, PropertyRequest updatedProperty){
-
         Optional<Property> existingPropertyOptional = propertyRepository.findById(propertyId);
         if (existingPropertyOptional.isPresent()) {
             Property existingProperty = existingPropertyOptional.get();
@@ -54,19 +68,12 @@ public class PropertyService {
         } else {
             throw new Exceptions(AllExceptions.PROPERTY_ID_NOT_FOUND);
         }
-
-
     }
 
 
-    public Property getPropertyDetails(String token, Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.isAuthenticated()){
-            Optional<Property> optionalProperty = propertyRepository.findById(id);
-            return propertyMapper.ConvertOptional(optionalProperty);
-        }
-        else
-            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
+    public Property getPropertyDetails(Long id) {
+        Optional<Property> optionalProperty = propertyRepository.findById(id);
+        return propertyMapper.ConvertOptional(optionalProperty);
     }
 
     public List<Property> getUserProperties(String token) {

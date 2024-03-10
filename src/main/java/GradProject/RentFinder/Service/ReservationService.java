@@ -74,7 +74,7 @@ public class ReservationService {
 
         return optionalReservation.isPresent();
     }
-    public void MakeDecision(Long reservationId,Boolean decision)
+    public void MakeDecision(Long reservationId,boolean decision)
     {
         try{
             reservationRepository.makeDecision(reservationId,decision);

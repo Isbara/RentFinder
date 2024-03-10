@@ -37,7 +37,7 @@ public class ReservationController {
     }
 
     @PostMapping("/decision/{reservationId}")
-    public ResponseEntity<String> makeDecisionForReservation(@PathVariable Long reservationId, @RequestBody Boolean decision) {
+    public ResponseEntity<String> makeDecisionForReservation(@PathVariable Long reservationId, @RequestBody boolean decision) {
 
         if (!reservationService.ValidateReservation(reservationId)) {//Checks reservation id exists or not
             throw new Exceptions(AllExceptions.RESERVATION_ID_NOT_FOUND);

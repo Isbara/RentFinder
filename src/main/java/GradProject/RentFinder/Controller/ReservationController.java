@@ -18,25 +18,25 @@ import java.util.List;
 public class ReservationController {
     private final ReservationService reservationService;
 
-    @PostMapping("/makeReservation/{id}")//User makes reservation for one specific property
-    public ResponseEntity<Reservation> MakeReservation(@RequestHeader(value = "Authorization") String token, @PathVariable Long id, @RequestBody ReservationRequest request) {
-        if(!reservationService.ValidateProperty(id))
+    @PostMapping("/makeReservation/{propertyId}")//User makes reservation for one specific property
+    public ResponseEntity<Reservation> MakeReservation(@RequestHeader(value = "Authorization") String token, @PathVariable Long propertyId, @RequestBody ReservationRequest request) {
+        if(!reservationService.ValidateProperty(propertyId))
         {
             throw new Exceptions(AllExceptions.PROPERTY_ID_NOT_FOUND);
         }
-        return ResponseEntity.ok().body(reservationService.MakeReservation(token, id, request));
+        return ResponseEntity.ok().body(reservationService.MakeReservation(token, propertyId, request));
     }
 
-    @GetMapping("/getReservation/{id}") //Returns user's reservations on the viewed property.
-    public ResponseEntity<List<Reservation>> GetReservations(@RequestHeader(value = "Authorization") String token, @PathVariable Long id) {
-        if(!reservationService.ValidateProperty(id))
+    @GetMapping("/getReservation/{propertyId}") //Returns user's reservations on the viewed property.
+    public ResponseEntity<List<Reservation>> GetReservations(@RequestHeader(value = "Authorization") String token, @PathVariable Long propertyId) {
+        if(!reservationService.ValidateProperty(propertyId))
         {
             throw new Exceptions(AllExceptions.PROPERTY_ID_NOT_FOUND);
         }
-        return ResponseEntity.ok().body(reservationService.GetReservations(token, id));
+        return ResponseEntity.ok().body(reservationService.GetReservations(token, propertyId));
     }
 
-    @PostMapping("/decision/{reservationId}")
+    @PostMapping("/decision/{reservationId}") // Property owner decides whether the user stayed in the property or not, true=stayed false=not
     public ResponseEntity<String> makeDecisionForReservation(@PathVariable Long reservationId, @RequestBody boolean decision) {
 
         if (!reservationService.ValidateReservation(reservationId)) {//Checks reservation id exists or not
@@ -48,7 +48,7 @@ public class ReservationController {
         return ResponseEntity.ok().body("Decision successfully made");
     }
 
-    @GetMapping("/getAllPropertyReservations")
+    @GetMapping("/getAllPropertyReservations") // Returns owners all property reservations
     public ResponseEntity<List<Reservation>> GetAllPropertyReservations(@RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(reservationService.GetAllPropertyReservations(token));
     }

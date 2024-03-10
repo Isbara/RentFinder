@@ -42,14 +42,12 @@ public class PropertyMapper {
         property.setOwner(model.get().getOwner());
         return property;
     }
-    public static void UpdateConvertOptional(Property existingProperty, PropertyRequest updatedProperty)
-    {
+    public static void UpdateConvertOptional(Property existingProperty, PropertyRequest updatedProperty){
         existingProperty.setPropertyType(updatedProperty.getPropertyType());
         existingProperty.setFlatNo(updatedProperty.getFlatNo());
         existingProperty.setAddress(updatedProperty.getAddress());
         existingProperty.setDescription(updatedProperty.getDescription());
         existingProperty.setPrice(updatedProperty.getPrice());
         existingProperty.setPlaceOffers(updatedProperty.getPlaceOffers());
-
     }
 }

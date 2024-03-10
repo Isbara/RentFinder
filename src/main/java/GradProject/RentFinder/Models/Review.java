@@ -29,5 +29,10 @@ public class Review extends Comment{
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "RESERVATION_ID")
     private Reservation reservation;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "USER_ID")
+    @ToString.Exclude
+    @JsonIgnore
+    private User reviewer;
 
 }

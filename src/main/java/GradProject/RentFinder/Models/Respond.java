@@ -16,4 +16,9 @@ public class Respond extends Comment{
     @ToString.Exclude
     @JsonIgnore
     private Review review;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "USER_ID")
+    @ToString.Exclude
+    @JsonIgnore
+    private User responder;
 }

@@ -14,8 +14,12 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     List<Reservation> findByIDs(@Param("userID") Long userID, @Param("propertyID") Long propertyID);
 
     @Modifying
-    @Query(nativeQuery = true, value = "UPDATE RESERVATION_TABLE SET STATUS = :decision WHERE ID = :reservationId")
-    void makeDecision(@Param("reservationId") Long reservationId, @Param("decision") boolean decision);
+    @Query(nativeQuery = true, value = "UPDATE RESERVATION_TABLE SET STATUS = :status_decision WHERE ID = :reservationId")
+    void makeDecisionForStatus(@Param("reservationId") Long reservationId, @Param("status_decision") boolean status_decision);
+
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE RESERVATION_TABLE SET APPROVAL = :approval_decision WHERE ID = :reservationId")
+    void makeDecisionForApproval(@Param("reservationId") Long reservationId, @Param("approval_decision") boolean approval_decision);
 
 
 }

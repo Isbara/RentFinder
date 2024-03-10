@@ -74,10 +74,10 @@ public class ReservationService {
 
         return optionalReservation.isPresent();
     }
-    public void MakeDecision(Long reservationId,boolean decision)
+    public void MakeDecisionForStatus(Long reservationId,boolean status_decision)
     {
         try{
-            reservationRepository.makeDecision(reservationId,decision);
+            reservationRepository.makeDecisionForStatus(reservationId,status_decision);
         }
         catch (Exception e)
         {
@@ -111,5 +111,16 @@ public class ReservationService {
         }
         else
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
+    }
+
+    public void MakeDecisionForApproval(Long reservationId,boolean approval_decision)
+    {
+        try{
+            reservationRepository.makeDecisionForApproval(reservationId,approval_decision);
+        }
+        catch (Exception e)
+        {
+            throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+        }
     }
 }

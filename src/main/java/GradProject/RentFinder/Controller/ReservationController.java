@@ -37,14 +37,14 @@ public class ReservationController {
     }
 
     @PostMapping("/status/{reservationId}") // Property owner decides whether the user stayed in the property or not, true=stayed false=not
-    public ResponseEntity<String> makeStatusDecisionForReservation(@PathVariable Long reservationId, @RequestBody boolean decision) {
+    public ResponseEntity<String> makeStatusDecisionForReservation(@PathVariable Long reservationId, @RequestBody boolean status_decision) {
 
         if (!reservationService.ValidateReservation(reservationId)) {//Checks reservation id exists or not
             throw new Exceptions(AllExceptions.RESERVATION_ID_NOT_FOUND);
         }
 
 
-        reservationService.MakeDecision(reservationId, decision); //Changes the decision according to the owners choice
+        reservationService.MakeDecisionForStatus(reservationId, status_decision); //Changes the decision according to the owners choice
         return ResponseEntity.ok().body("Decision successfully made");
     }
 
@@ -53,7 +53,21 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservationService.GetAllPropertyReservations(token));
     }
 
-  
+    @PostMapping("/approval/{reservationId}") // Property owner decides whether the user stayed in the property or not, true=stayed false=not
+    public ResponseEntity<String> makeApprovalDecisionForReservation(@PathVariable Long reservationId, @RequestBody boolean approval_decision) {
+
+        if (!reservationService.ValidateReservation(reservationId)) {//Checks reservation id exists or not
+            throw new Exceptions(AllExceptions.RESERVATION_ID_NOT_FOUND);
+        }
+
+
+        reservationService.MakeDecisionForApproval(reservationId, approval_decision); //Changes the decision according to the owners choice
+        return ResponseEntity.ok().body("Decision successfully made");
+    }
+
+
+
+
 
 
 }

@@ -52,11 +52,11 @@ public class PropertyService {
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
-    public void deleteProperty(String token,Long propertyId)
-    {
+    public String deleteProperty(Long propertyId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.isAuthenticated()) {
             propertyRepository.deleteById(propertyId);
+            return "Property was deleted successfully";
         }
         else
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);

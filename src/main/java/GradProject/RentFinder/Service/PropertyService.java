@@ -52,22 +52,26 @@ public class PropertyService {
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
-    public void deleteProperty(Long propertyId)
-    {
+    public void deleteProperty(Long propertyId){
         propertyRepository.deleteById(propertyId);
 
     }
 
-    public String updateProperty(Long propertyId, PropertyRequest updatedProperty){
-        Optional<Property> existingPropertyOptional = propertyRepository.findById(propertyId);
-        if (existingPropertyOptional.isPresent()) {
-            Property existingProperty = existingPropertyOptional.get();
-            PropertyMapper.UpdateConvertOptional(existingProperty,updatedProperty);
+    public String updateProperty(Long propertyId, PropertyRequest request){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()) {
+            Optional<Property> existingPropertyOptional = propertyRepository.findById(propertyId);
+            Property existingProperty;
+            if (existingPropertyOptional.isPresent())
+                existingProperty = existingPropertyOptional.get();
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            PropertyMapper.UpdateConvertOptional(existingProperty, request);
             propertyRepository.save(existingProperty);
-            return("Property is updated");
-        } else {
-            throw new Exceptions(AllExceptions.PROPERTY_ID_NOT_FOUND);
+            return ("Property is updated");
         }
+        else
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
 

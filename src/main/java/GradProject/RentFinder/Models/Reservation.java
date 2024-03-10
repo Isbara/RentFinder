@@ -24,7 +24,7 @@ public class Reservation {
     @Column(name = "END_DATE")
     private Date endDate;
     @Column(name="STATUS")
-    private Boolean status;
+    private boolean status;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     @ToString.Exclude

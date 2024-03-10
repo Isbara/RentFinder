@@ -15,7 +15,7 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE RESERVATION_TABLE SET STATUS = :decision WHERE ID = :reservationId")
-    void makeDecision(@Param("reservationId") Long reservationId, @Param("decision") Boolean decision);
+    void makeDecision(@Param("reservationId") Long reservationId, @Param("decision") boolean decision);
 
 
 }

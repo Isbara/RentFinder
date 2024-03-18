@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,12 @@ public class UserService {
     }
 
     public AuthResponse Login(UserRequest credentials) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(credentials.getEmail(),credentials.getPassword()));
+        try{authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(credentials.getEmail(),credentials.getPassword()));} //Throws exception if password is incorrect so added exception handling
+        catch (AuthenticationException e)
+        {
+            throw new Exceptions(AllExceptions.WRONG_CREDENTIALS);
+        }
+
         Optional<User> optionalUser =userRepository.findByEmail(credentials.getEmail());
         if(optionalUser.isPresent()){
             User user = userMapper.ConvertOptional(optionalUser);
@@ -66,7 +72,7 @@ public class UserService {
             return new AuthResponse(jwtToken);
         }
         else{
-            throw  new Exceptions(AllExceptions.WRONG_CREDENTIALS);
+            throw new Exceptions(AllExceptions.WRONG_CREDENTIALS);
         }
     }
 

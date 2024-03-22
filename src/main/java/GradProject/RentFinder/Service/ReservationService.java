@@ -123,4 +123,29 @@ public class ReservationService {
             throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public List<Reservation> GetAllUserReservations(String token) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            if(optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                List<Reservation> reservationList = new ArrayList<>();
+                for (Property property : propertyRepository.findAll()) {
+                    for (Reservation reservation : property.getReservations()) {
+                        if (reservation.getReserver().equals(user)) {
+                            reservationList.add(reservation);
+                        }
+                    }
+                }
+                return reservationList;
+            } else {
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
+        }
+    }
 }

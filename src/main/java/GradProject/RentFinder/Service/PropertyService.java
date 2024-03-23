@@ -5,6 +5,7 @@ import GradProject.RentFinder.Exception.Exceptions;
 import GradProject.RentFinder.Mapper.PropertyMapper;
 import GradProject.RentFinder.Mapper.UserMapper;
 import GradProject.RentFinder.Models.Property;
+import GradProject.RentFinder.Models.Reservation;
 import GradProject.RentFinder.Models.User;
 import GradProject.RentFinder.Repository.PropertyRepository;
 import GradProject.RentFinder.Repository.UserRepository;
@@ -98,5 +99,20 @@ public class PropertyService {
         else{
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
         }
+    }
+
+    public List<Reservation> GetPropertyReservations(String token, Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()){
+            Optional<Property> optionalProperty = propertyRepository.findById(id);
+            if(optionalProperty.isPresent()){
+                Property property = propertyMapper.ConvertOptional(optionalProperty);
+                return property.getReservations();
+            }
+            else
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+        }
+        else
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 }

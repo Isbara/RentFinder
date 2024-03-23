@@ -1,6 +1,7 @@
 package GradProject.RentFinder.Controller;
 
 import GradProject.RentFinder.Models.Property;
+import GradProject.RentFinder.Models.Reservation;
 import GradProject.RentFinder.RequestModel.PropertyRequest;
 import GradProject.RentFinder.Service.PropertyService;
 import jakarta.validation.Valid;
@@ -32,7 +33,7 @@ public class PropertyController{
     }
 
     @PutMapping("/updateProperty/{propertyId}")
-    public ResponseEntity<String> updateProperty(@PathVariable Long propertyId, @Valid @RequestBody PropertyRequest propertyRequest) {
+    public ResponseEntity<String> updateProperty(@PathVariable Long propertyId, @RequestBody PropertyRequest propertyRequest) {
         return ResponseEntity.ok().body(propertyService.updateProperty(propertyId, propertyRequest));
     }
 
@@ -44,5 +45,8 @@ public class PropertyController{
     public ResponseEntity<List<Property>> GetUserProperties(@RequestHeader(value = "Authorization") String token){
         return ResponseEntity.ok().body(propertyService.getUserProperties(token));
     }
-
+    @GetMapping("/getReservations/{propertyID}")
+    public ResponseEntity<List<Reservation>> GetPropertyReservations(@RequestHeader(value = "Authorization") String token, @PathVariable Long propertyID){
+        return ResponseEntity.ok().body(propertyService.GetPropertyReservations(token, propertyID));
+    }
 }

@@ -104,12 +104,18 @@ public class UserService {
                 user = userMapper.ConvertOptional(optionalUser);
             else
                 throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
-            user.setName(request.getName());
-            user.setSurname(request.getSurname());
-            user.setEmail(request.getEmail());
-            user.setPassword(request.getPassword());
-            user.setPhoneNumber(request.getPhoneNumber());
-            user.setDateOfBirth(request.getDateOfBirth());
+            if(request.getName()!=null)
+                user.setName(request.getName());
+            if(request.getSurname()!=null)
+                user.setSurname(request.getSurname());
+            if(request.getEmail()!=null)
+                user.setEmail(request.getEmail());
+            if(request.getPassword()!=null)
+                user.setPassword(passwordEncoder.encode(request.getPassword()));
+            if(request.getPhoneNumber()!=null)
+                user.setPhoneNumber(request.getPhoneNumber());
+            if(request.getDateOfBirth()!=null)
+                user.setDateOfBirth(request.getDateOfBirth());
             userRepository.save(user);
             return "User details were updated successfully";
         }

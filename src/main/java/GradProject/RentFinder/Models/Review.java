@@ -24,16 +24,51 @@ public class Review extends Comment{
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PROPERTY_ID")
     @ToString.Exclude
-    @JsonIgnore
     private Property property;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "RESERVATION_ID")
-    @JsonIgnore
     private Reservation reservation;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     @ToString.Exclude
-    @JsonIgnore
     private User reviewer;
 
+    @JsonIgnore
+    public Property getProperty() {
+        return this.property;
+    }
+    @JsonIgnore
+    public void setProperty(Property property){
+        this.property = property;
+    }
+
+    public Long getPropertyID(){
+        return property.getPropertyID();
+    }
+
+    @JsonIgnore
+    public Reservation getReservation() {
+        return this.reservation;
+    }
+    @JsonIgnore
+    public void setReservation(Reservation reservation){
+        this.reservation = reservation;
+    }
+
+    public Long getReservationID(){
+        return reservation.getReservationID();
+    }
+
+    @JsonIgnore
+    public User getReviewer() {
+        return this.reviewer;
+    }
+    @JsonIgnore
+    public void setReviewer(User reviewer){
+        this.reviewer = reviewer;
+    }
+
+    public Long getReviewerID(){
+        return reviewer.getUserID();
+    }
 }

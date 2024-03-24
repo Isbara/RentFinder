@@ -27,7 +27,6 @@ public class Review extends Comment{
     private Property property;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "RESERVATION_ID")
-    @JsonIgnore
     private Reservation reservation;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")

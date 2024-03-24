@@ -47,7 +47,7 @@ public class Reservation {
         this.reserved = reserved;
     }
 
-    public Long getPropertyID(){//sa
+    public Long getPropertyID(){
         return reserved.getPropertyID();
     }
 }

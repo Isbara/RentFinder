@@ -1,6 +1,7 @@
 package GradProject.RentFinder.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,6 +39,7 @@ public class Reservation {
     private Property reserved;
     @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Review review;
+
     @JsonIgnore
     public Property getReserved() {
         return this.reserved;

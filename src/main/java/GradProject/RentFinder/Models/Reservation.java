@@ -36,9 +36,20 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PROPERTY_ID")
     @ToString.Exclude
-    @JsonIgnoreProperties("reservations")
     private Property reserved;
     @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Review review;
 
+    @JsonIgnore
+    public Property getReserved() {
+        return this.reserved;
+    }
+    @JsonIgnore
+    public void setReserved(Property reserved){
+        this.reserved = reserved;
+    }
+
+    public Long getPropertyID(){
+        return reserved.getPropertyID();
+    }
 }

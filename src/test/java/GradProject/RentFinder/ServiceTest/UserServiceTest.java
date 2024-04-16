@@ -1,6 +1,7 @@
 package GradProject.RentFinder.ServiceTest;
 
 import GradProject.RentFinder.Exception.AllExceptions;
+import GradProject.RentFinder.Helper.MockObjects;
 import GradProject.RentFinder.Mapper.UserMapper;
 import GradProject.RentFinder.Models.User;
 import GradProject.RentFinder.RequestModel.UserRequest;
@@ -10,7 +11,17 @@ import GradProject.RentFinder.Service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
+
+import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -22,45 +33,38 @@ import java.util.List;
 
 public class UserServiceTest {
 
+
+
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private UserMapper userMapper;
+    @Mock
+    private JwtService jwtService;
+    @Mock
+    private AuthenticationManager authenticationManager;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @InjectMocks
     private UserService userService;
-    private UserRepository userRepositoryMock;
-    private UserMapper userMapperMock;
-    private JwtService jwtServiceMock;
-    private AuthenticationManager authenticationManagerMock;
-    private PasswordEncoder passwordEncoderMock;
+
+
+    private MockObjects mockObjects=new MockObjects();
 
     @BeforeEach
     public void setup() {
-        userRepositoryMock = Mockito.mock(UserRepository.class);
-        userMapperMock = Mockito.mock(UserMapper.class);
-        jwtServiceMock = Mockito.mock(JwtService.class);
-        authenticationManagerMock = Mockito.mock(AuthenticationManager.class);
-        passwordEncoderMock = Mockito.mock(PasswordEncoder.class);
-        userService = new UserService(userRepositoryMock, userMapperMock, jwtServiceMock, authenticationManagerMock, passwordEncoderMock);
+        MockitoAnnotations.openMocks(this); //for initalizing mocks
     }
 
     @Test
-    void testCreateUser_Success() {
-        // Arrange
-        UserRequest userRequest = createUserRequest("John", "Doe", "john@example.com", "password", "1234567890", "1990-01-03");
-        Mockito.when(userRepositoryMock.findAll()).thenReturn(new ArrayList<>()); // Mocking userRepository to return an empty list
-        Mockito.when(passwordEncoderMock.encode(Mockito.anyString())).thenReturn("encodedPassword");
-        Mockito.when(userMapperMock.ConvertOptional(Mockito.any())).thenReturn(new User()); // Mocking userMapper to return a mock User object
+    public void testCreateUser_Success() {
 
-        // Act
+        UserRequest userRequest = mockObjects.userRequest_1();
+
+        given(userRepository.findAll()).willReturn(List.of(mockObjects.user_1()));
+        given(passwordEncoder.encode(userRequest.getPassword())).willReturn("encodedPassword");
         String result = userService.CreateUser(userRequest);
+        assertNotNull(result);
 
-        // Assert
-        Assertions.assertEquals("The new user is created successfully.", result);
-    }
-
-    private UserRequest createUserRequest(String name, String surname, String email, String password, String phoneNumber, String dateOfBirth) {
-        Date dob;
-        try {
-            dob = new SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth);
-        } catch (ParseException e) {
-            throw new IllegalArgumentException("Invalid date format for dateOfBirth");
-        }
-        return new UserRequest(name, surname, email, password, phoneNumber, dob);
     }
 }

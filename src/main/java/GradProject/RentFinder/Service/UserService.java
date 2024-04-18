@@ -95,33 +95,36 @@ public class UserService {
 
     public String UpdateUser(String token, UserRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.isAuthenticated()){
+        if (authentication.isAuthenticated()) {
             String jwt = token.substring(7);
             String username = jwtService.extractUsername(jwt);
             Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user_for_password = userMapper.ConvertOptional(optionalUser);
             User user;
-            if(optionalUser.isPresent())
-                user = userMapper.ConvertOptional(optionalUser);
-            else
+            if (optionalUser.isPresent()) {
+                user = optionalUser.get();
+                if (request.getName() != null)
+                    user.setName(request.getName());
+                if (request.getSurname() != null)
+                    user.setSurname(request.getSurname());
+                if (request.getEmail() != null)
+                    user.setEmail(request.getEmail());
+                if (request.getPassword() != null)
+                    user.setPassword(user_for_password.getPassword());
+                if (request.getPhoneNumber() != null)
+                    user.setPhoneNumber(request.getPhoneNumber());
+                if (request.getDateOfBirth() != null)
+                    user.setDateOfBirth(request.getDateOfBirth());
+                userRepository.save(user);
+                return "User details were updated successfully";
+            } else {
                 throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
-            if(request.getName()!=null)
-                user.setName(request.getName());
-            if(request.getSurname()!=null)
-                user.setSurname(request.getSurname());
-            if(request.getEmail()!=null)
-                user.setEmail(request.getEmail());
-            if(request.getPassword()!=null)
-                user.setPassword(passwordEncoder.encode(request.getPassword()));
-            if(request.getPhoneNumber()!=null)
-                user.setPhoneNumber(request.getPhoneNumber());
-            if(request.getDateOfBirth()!=null)
-                user.setDateOfBirth(request.getDateOfBirth());
-            userRepository.save(user);
-            return "User details were updated successfully";
+            }
+        } else {
+            throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
         }
-        else
-            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
+
 
     public String DeleteUser(String token) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

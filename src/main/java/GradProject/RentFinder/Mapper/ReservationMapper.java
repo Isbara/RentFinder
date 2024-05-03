@@ -30,7 +30,6 @@ public class ReservationMapper {
         reservation.setEndDate(model.get().getEndDate());
         reservation.setReserver(model.get().getReserver());
         reservation.setReserved(model.get().getReserved());
-        reservation.setStatus(model.get().isStatus());//boolean and Boolean are different. Needs change based on decisions.
         return reservation;
     }
 }

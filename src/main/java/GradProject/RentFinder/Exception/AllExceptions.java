@@ -10,7 +10,9 @@ public enum AllExceptions {
     TOKEN_EXPIRED("Token is expired"),
     RESERVATION_ID_NOT_FOUND("Reservation id couldn't be found"),
     INTERNAL_SERVER_ERROR("An error has occured"),
-    WRONG_CREDENTIALS("Email or password is wrong");
+    WRONG_CREDENTIALS("Email or password is wrong"),
+    DECISION_ERROR("An error has occured while trying to update decision"),
+    NULL_ERROR("One of the values is null");
 
 
 

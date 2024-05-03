@@ -36,8 +36,8 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservationService.GetReservations(token, propertyId));
     }
 
-    @PostMapping("/status/{reservationId}") // Property owner decides whether the user stayed in the property or not, true=stayed false=not
-    public ResponseEntity<String> makeStatusDecisionForReservation(@PathVariable Long reservationId, @RequestBody boolean status_decision) {
+    @PutMapping("/status/{reservationId}") // Property owner decides whether the user stayed in the property or not, true=stayed false=not
+    public ResponseEntity<String> makeStatusDecisionForReservation(@PathVariable Long reservationId, @RequestBody Boolean status_decision) {
 
         if (!reservationService.ValidateReservation(reservationId)) {//Checks reservation id exists or not
             throw new Exceptions(AllExceptions.RESERVATION_ID_NOT_FOUND);
@@ -47,23 +47,24 @@ public class ReservationController {
         reservationService.MakeDecisionForStatus(reservationId, status_decision); //Changes the decision according to the owners choice
         return ResponseEntity.ok().body("Decision successfully made");
     }
-
-    @GetMapping("/getAllPropertyReservations") // Returns owners all property reservations
-    public ResponseEntity<List<Reservation>> GetAllPropertyReservations(@RequestHeader(value = "Authorization") String token) {
-        return ResponseEntity.ok().body(reservationService.GetAllPropertyReservations(token));
-    }
-
-    @PostMapping("/approval/{reservationId}") // Property owner decides whether the user can stay in the property or not, true=stayed false=not
-    public ResponseEntity<String> makeApprovalDecisionForReservation(@PathVariable Long reservationId, @RequestBody boolean approval_decision) {
+    @PutMapping("/approval/{reservationId}") // Property owner decides whether the user can stay in the property or not, true=stayed false=not
+    public ResponseEntity<String> makeApprovalDecisionForReservation(@PathVariable Long reservationId, @RequestBody Boolean approval_decision,@RequestHeader(value = "Authorization") String token) {
 
         if (!reservationService.ValidateReservation(reservationId)) {//Checks reservation id exists or not
             throw new Exceptions(AllExceptions.RESERVATION_ID_NOT_FOUND);
         }
 
 
-        reservationService.MakeDecisionForApproval(reservationId, approval_decision); //Changes the decision according to the owners choice
+        reservationService.MakeDecisionForApproval(reservationId, approval_decision,token); //Changes the decision according to the owners choice
         return ResponseEntity.ok().body("Decision successfully made");
     }
+
+    @GetMapping("/getAllPropertyReservations") // Returns owners all property reservations
+    public ResponseEntity<List<Reservation>> GetAllPropertyReservations(@RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(reservationService.GetAllPropertyReservations(token));
+    }
+
+
 
     @GetMapping("/getAllUserReservations") // Returns user's all reservations
     public ResponseEntity<List<Reservation>> GetAllUserReservations(@RequestHeader(value = "Authorization") String token) {

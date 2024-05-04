@@ -11,7 +11,9 @@ public enum AllExceptions {
     RESERVATION_ID_NOT_FOUND("Reservation id couldn't be found"),
     INTERNAL_SERVER_ERROR("An error has occured"),
     WRONG_CREDENTIALS("Email or password is wrong"),
-    LOW_KARMA("User karma point is below 80! Can not write reviews!");
+    DECISION_ERROR("An error has occured while trying to update decision"),
+    NULL_ERROR("One of the values is null"),
+    LOW_KARMA("User karma is too low! Can not write reviews!");
 
 
 

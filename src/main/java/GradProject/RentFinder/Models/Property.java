@@ -34,9 +34,11 @@ public class Property {
     private int price;
     @Column(name = "OFFERS")
     private String placeOffers;
+    @Column(name = "IMAGE", columnDefinition = "LONGBLOB") // New column to store binary image data
+    private byte[] image;
     @OneToMany(mappedBy = "property", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Review> reviews = new ArrayList<Review>();
-    @OneToMany(mappedBy = "reserved", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "reserved", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Reservation> reservations = new ArrayList<Reservation>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")

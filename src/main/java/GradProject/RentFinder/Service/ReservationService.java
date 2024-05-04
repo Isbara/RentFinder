@@ -74,16 +74,7 @@ public class ReservationService {
 
         return optionalReservation.isPresent();
     }
-    public void MakeDecisionForStatus(Long reservationId,boolean status_decision)
-    {
-        try{
-            reservationRepository.makeDecisionForStatus(reservationId,status_decision);
-        }
-        catch (Exception e)
-        {
-            throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
-        }
-    }
+
 
     public Boolean ValidateProperty(Long propertyId)
     {
@@ -113,17 +104,29 @@ public class ReservationService {
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
-    public void MakeDecisionForApproval(Long reservationId,boolean approval_decision)
-    {
-        try{
-            reservationRepository.makeDecisionForApproval(reservationId,approval_decision);
+    public void MakeDecisionForApproval(Long reservationId,Boolean approval_decision,String token) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.isAuthenticated()) {
+
+            reservationRepository.makeDecisionForApproval(reservationId, approval_decision);
+
         }
-        catch (Exception e)
-        {
-            throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
-        }
+        else
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
+    public void MakeDecisionForStatus(Long reservationId,Boolean status_decision)
+    {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.isAuthenticated()) {
+
+            try {
+                reservationRepository.makeDecisionForStatus(reservationId, status_decision);
+            } catch (Exception e) {
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
     public List<Reservation> GetAllUserReservations(String token) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.isAuthenticated()){

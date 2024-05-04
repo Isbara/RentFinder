@@ -3,12 +3,12 @@ package GradProject.RentFinder.Mapper;
 import GradProject.RentFinder.Models.Property;
 import GradProject.RentFinder.RequestModel.PropertyRequest;
 import org.springframework.stereotype.Component;
-
+import java.util.Base64;
 import java.util.Optional;
 
 @Component
 public class PropertyMapper {
-    public Property ConvertToModel(PropertyRequest request){
+    public Property ConvertToModel(PropertyRequest request) {
         Property property = new Property();
         property.setPropertyType(request.getPropertyType());
         property.setFlatNo(request.getFlatNo());
@@ -16,9 +16,11 @@ public class PropertyMapper {
         property.setDescription(request.getDescription());
         property.setPrice(request.getPrice());
         property.setPlaceOffers(request.getPlaceOffers());
+        property.setImage(request.getImage()); // Assuming image is already base64 encoded string
         return property;
     }
-    public PropertyRequest ConvertToRequest(Property property){
+
+    public PropertyRequest ConvertToRequest(Property property) {
         PropertyRequest request = new PropertyRequest();
         request.setPropertyType(property.getPropertyType());
         request.setFlatNo(property.getFlatNo());
@@ -26,9 +28,11 @@ public class PropertyMapper {
         request.setDescription(property.getDescription());
         request.setPrice(property.getPrice());
         request.setPlaceOffers(property.getPlaceOffers());
+        request.setImage(property.getImage()); // Assuming image is already base64 encoded string
         return request;
     }
-    public Property ConvertOptional(Optional<Property> model){
+
+    public Property ConvertOptional(Optional<Property> model) {
         Property property = new Property();
         property.setPropertyID(model.get().getPropertyID());
         property.setPropertyType(model.get().getPropertyType());
@@ -40,14 +44,17 @@ public class PropertyMapper {
         property.setReviews(model.get().getReviews());
         property.setReservations(model.get().getReservations());
         property.setOwner(model.get().getOwner());
+        property.setImage(model.get().getImage());
         return property;
     }
-    public static void UpdateConvertOptional(Property existingProperty, PropertyRequest updatedProperty){
+
+    public static void UpdateConvertOptional(Property existingProperty, PropertyRequest updatedProperty) {
         existingProperty.setPropertyType(updatedProperty.getPropertyType());
         existingProperty.setFlatNo(updatedProperty.getFlatNo());
         existingProperty.setAddress(updatedProperty.getAddress());
         existingProperty.setDescription(updatedProperty.getDescription());
         existingProperty.setPrice(updatedProperty.getPrice());
         existingProperty.setPlaceOffers(updatedProperty.getPlaceOffers());
+        existingProperty.setImage(updatedProperty.getImage()); // Assuming image is already base64 encoded string
     }
 }

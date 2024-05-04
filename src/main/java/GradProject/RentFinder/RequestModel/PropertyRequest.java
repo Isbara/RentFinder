@@ -13,4 +13,5 @@ public class PropertyRequest {
     private String description;
     private int price;
     private String placeOffers;
+    private byte[] image;
 }

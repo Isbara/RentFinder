@@ -10,7 +10,8 @@ public enum AllExceptions {
     TOKEN_EXPIRED("Token is expired"),
     RESERVATION_ID_NOT_FOUND("Reservation id couldn't be found"),
     INTERNAL_SERVER_ERROR("An error has occured"),
-    WRONG_CREDENTIALS("Email or password is wrong");
+    WRONG_CREDENTIALS("Email or password is wrong"),
+    LOW_KARMA("User karma point is below 80! Can not write reviews!");
 
 
 

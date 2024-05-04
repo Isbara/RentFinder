@@ -58,30 +58,38 @@ public class ReviewService {
                 user = userMapper.ConvertOptional(optionalUser);
             else
                 throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
-            Optional<Property> optionalProperty = propertyRepository.findById(propertyID);
-            Property property;
-            if(optionalProperty.isPresent())
-                property = propertyMapper.ConvertOptional(optionalProperty);
+            if(user.getKarmaPoint()>=80) {
+                Optional<Property> optionalProperty = propertyRepository.findById(propertyID);
+                Property property;
+                if (optionalProperty.isPresent())
+                    property = propertyMapper.ConvertOptional(optionalProperty);
+                else
+                    throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+                Optional<Reservation> optionalReservation = reservationRepository.findById(reservationID);
+                Reservation reservation;
+                if (optionalReservation.isPresent())
+                    reservation = reservationMapper.ConvertOptional(optionalReservation);
+                else
+                    throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+                Review review = reviewMapper.ConvertToModel(request);
+                review.setDate(new Date(System.currentTimeMillis()));
+                review.setProperty(property);
+                review.setReservation(reservation);
+                review.setReviewer(user);
+                RestTemplate restTemplate = new RestTemplate();
+                Review scannedReview = restTemplate.postForObject("http://localhost:5000/detection_server", review, Review.class);
+                review.setAlgoResult(scannedReview.isAlgoResult());
+                if (review.isAlgoResult())
+                    user.setKarmaPoint(user.getKarmaPoint() + 4);
+                else
+                    user.setKarmaPoint(user.getKarmaPoint() - 8);
+                return reviewRepository.save(review);
+            }
             else
-                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
-            Optional<Reservation> optionalReservation = reservationRepository.findById(reservationID);
-            Reservation reservation;
-            if(optionalReservation.isPresent())
-                reservation = reservationMapper.ConvertOptional(optionalReservation);
-            else
-                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
-            Review review = reviewMapper.ConvertToModel(request);
-            review.setDate(new Date(System.currentTimeMillis()));
-            review.setProperty(property);
-            review.setReservation(reservation);
-            review.setReviewer(user);
-            RestTemplate restTemplate = new RestTemplate();
-            Review scannedReview = restTemplate.postForObject("http://localhost:5000/detection_server", review, Review.class);
-            review.setAlgoResult(scannedReview.isAlgoResult());
-            return reviewRepository.save(review);
+                throw new Exceptions(AllExceptions.LOW_KARMA);
         }
         else
-            throw  new Exceptions(AllExceptions.TOKEN_EXPIRED);
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
     public Respond WriteRespond(String token, Long id, RespondRequest request) {

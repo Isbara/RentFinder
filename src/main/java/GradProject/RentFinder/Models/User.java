@@ -40,15 +40,15 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name="ROLE")
     private Role role;
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Property> properties = new ArrayList<Property>();
-    @OneToMany(mappedBy = "reserver", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "reserver", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Reservation> reservations = new ArrayList<Reservation>();
-    @OneToMany(mappedBy = "submitter", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "submitter", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Ticket> tickets = new ArrayList<Ticket>();
-    @OneToMany(mappedBy="reviewer",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="reviewer",cascade=CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Review> comments=new ArrayList<Review>();
-    @OneToMany(mappedBy="responder",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="responder",cascade=CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Respond> responds=new ArrayList<Respond>();
 
 

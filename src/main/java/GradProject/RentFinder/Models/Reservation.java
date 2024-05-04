@@ -37,7 +37,7 @@ public class Reservation {
     @JoinColumn(name = "PROPERTY_ID")
     @ToString.Exclude
     private Property reserved;
-    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private Review review;
 
     @JsonIgnore

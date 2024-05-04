@@ -19,7 +19,7 @@ public class Review extends Comment{
     private int userScore;
     @Column(name = "ALGO_RESULT")
     private boolean algoResult;
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Respond> respondList = new ArrayList<Respond>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PROPERTY_ID")

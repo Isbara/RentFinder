@@ -34,17 +34,13 @@ public class ReviewService {
     private final RespondRepository respondRepository;
 
 
-    public List<Review> GetPropertyReviews(String token, Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.isAuthenticated()){
+    public List<Review> GetPropertyReviews(Long id) {
             Optional<Property> optionalProperty = propertyRepository.findById(id);
             if(optionalProperty.isPresent())
                 return propertyMapper.ConvertOptional(optionalProperty).getReviews();
             else
                 throw  new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
-        }
-        else
-            throw  new Exceptions(AllExceptions.TOKEN_EXPIRED);
+
     }
 
     public Review WriteReview(String token, Long propertyID, Long reservationID, ReviewRequest request) {

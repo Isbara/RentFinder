@@ -19,8 +19,8 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/{id}") //Get reviews of a property
-    public ResponseEntity<List<Review>> GetPropertyReviews(@RequestHeader(value = "Authorization") String token, @PathVariable Long id){
-        return ResponseEntity.ok().body(reviewService.GetPropertyReviews(token, id));
+    public ResponseEntity<List<Review>> GetPropertyReviews(@PathVariable Long id){
+        return ResponseEntity.ok().body(reviewService.GetPropertyReviews(id));
     }
 
     @PostMapping("/{propertyID}/{reservationID}")

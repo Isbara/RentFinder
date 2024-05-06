@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
 
                         
-                        .requestMatchers("/h2-console", "/h2-console/**", "/user/register", "/user/login", "/property/getProperties" ,"property/addProperty","property/updateProperty/{propertyId}","user/getUserDetails/{id}","property/getPropertyDetails/{propertyId}").permitAll()
+                        .requestMatchers("/h2-console", "/h2-console/**", "/user/register", "/user/login", "/property/getProperties" ,"property/getPropertyDetails/{propertyId}","/review/{id}").permitAll()
 
                         .anyRequest().authenticated())
                 .headers((headerauth) -> headerauth

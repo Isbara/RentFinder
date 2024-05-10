@@ -52,4 +52,7 @@ public class Reservation {
     public Long getPropertyID(){
         return reserved.getPropertyID();
     }
+    public String getPhoneNumber(){
+        return reserver.getPhoneNumber();
+    }
 }

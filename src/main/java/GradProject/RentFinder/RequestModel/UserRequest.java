@@ -14,4 +14,9 @@ public class UserRequest {
     private String password;
     private String phoneNumber;
     private Date dateOfBirth;
+
+    public UserRequest(String email, String password) {
+        this.setEmail(email);
+        this.setPassword(password);
+    }
 }

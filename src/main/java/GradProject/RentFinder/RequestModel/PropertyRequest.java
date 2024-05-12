@@ -14,4 +14,13 @@ public class PropertyRequest {
     private int price;
     private String placeOffers;
     private byte[] image;
+
+    public PropertyRequest(char propertyType, int flatNo, String address, String description, int price, String placeOffers) {
+        this.propertyType = propertyType;
+        this.flatNo = flatNo;
+        this.address = address;
+        this.description = description;
+        this.price = price;
+        this.placeOffers = placeOffers;
+    }
 }

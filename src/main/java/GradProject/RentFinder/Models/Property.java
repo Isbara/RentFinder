@@ -22,27 +22,39 @@ public class Property {
     @Column(name = "ID")
     @GeneratedValue
     private long propertyID;
+
     @Column(name = "TYPE")
     private char propertyType;
+
     @Column(name = "FLAT_NO")
     private int flatNo;
+
     @Column(name = "ADDRESS")
     private String address;
+
     @Column(name = "DESCRIPTION")
     private String description;
+
     @Column(name = "PRICE")
     private int price;
+
     @Column(name = "OFFERS")
     private String placeOffers;
-    @Column(name = "IMAGE", columnDefinition = "LONGBLOB") // New column to store binary image data
-    private byte[] image;
+
+    // Updated to handle multiple images
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Image> images = new ArrayList<>();
+
     @OneToMany(mappedBy = "property", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Review> reviews = new ArrayList<Review>();
+    private List<Review> reviews = new ArrayList<>();
+
     @OneToMany(mappedBy = "reserved", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-    private List<Reservation> reservations = new ArrayList<Reservation>();
+    private List<Reservation> reservations = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     @ToString.Exclude
     @JsonIgnore
     private User owner;
+
 }

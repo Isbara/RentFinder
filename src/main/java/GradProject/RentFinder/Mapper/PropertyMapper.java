@@ -3,7 +3,6 @@ package GradProject.RentFinder.Mapper;
 import GradProject.RentFinder.Models.Image;
 import GradProject.RentFinder.Models.Property;
 import GradProject.RentFinder.RequestModel.PropertyRequest;
-import GradProject.RentFinder.ResponseModel.PropertyResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class PropertyMapper {
@@ -90,12 +89,16 @@ public class PropertyMapper {
     }
 
     public static void UpdateConvertOptional(Property existingProperty, PropertyRequest updatedProperty) {
+        // Update existing property fields
         existingProperty.setPropertyType(updatedProperty.getPropertyType());
         existingProperty.setFlatNo(updatedProperty.getFlatNo());
         existingProperty.setAddress(updatedProperty.getAddress());
         existingProperty.setDescription(updatedProperty.getDescription());
         existingProperty.setPrice(updatedProperty.getPrice());
         existingProperty.setPlaceOffers(updatedProperty.getPlaceOffers());
+
+        // Clear existing images
+        existingProperty.getImages().clear();
 
         // Convert each image data string to a byte array and update the existing property's images
         for (String imageData : updatedProperty.getImages()) {
@@ -112,33 +115,4 @@ public class PropertyMapper {
         }
     }
 
-      /*  public List<PropertyResponse> convertToResponse(List<Property> properties) {
-            List<PropertyResponse> responses = new ArrayList<>();
-
-            // Iterate over each Property entity and convert it to PropertyResponse
-            for (Property property : properties) {
-                PropertyResponse response = new PropertyResponse();
-
-                List<String> base64Images = property.getImages().stream()
-                        .map(image -> Base64.getEncoder().encodeToString(image.getData()))
-                        .collect(Collectors.toList());
-
-                // Set the properties of the PropertyResponse object
-                response.setPropertyID(property.getPropertyID());
-                response.setPropertyType(property.getPropertyType());
-                response.setFlatNo(property.getFlatNo());
-                response.setAddress(property.getAddress());
-                response.setDescription(property.getDescription());
-                response.setPrice(property.getPrice());
-                response.setPlaceOffers(property.getPlaceOffers());
-                response.setImages(base64Images);
-
-                // Add the constructed PropertyResponse object to the list
-                responses.add(response);
-            }
-
-            // Return the list of PropertyResponse objects
-            return responses;
-        }   */
-    }
-
+}

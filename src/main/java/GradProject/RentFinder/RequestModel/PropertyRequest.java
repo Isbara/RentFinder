@@ -2,6 +2,7 @@ package GradProject.RentFinder.RequestModel;
 
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -23,5 +24,6 @@ public class PropertyRequest {
         this.description = description;
         this.price = price;
         this.placeOffers = placeOffers;
+        this.images = new ArrayList<>();
     }
 }

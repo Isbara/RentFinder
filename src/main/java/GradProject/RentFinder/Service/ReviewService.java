@@ -72,6 +72,7 @@ public class ReviewService {
                 review.setProperty(property);
                 review.setReservation(reservation);
                 review.setReviewer(user);
+                review.setUserScore(request.getUserScore());
                 RestTemplate restTemplate = new RestTemplate();
                 Review scannedReview = restTemplate.postForObject("http://localhost:5000/detection_server", review, Review.class);
                 review.setAlgoResult(scannedReview.isAlgoResult());

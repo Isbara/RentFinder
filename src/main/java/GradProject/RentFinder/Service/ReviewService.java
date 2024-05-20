@@ -80,6 +80,7 @@ public class ReviewService {
                     user.setKarmaPoint(user.getKarmaPoint() + 4);
                 else
                     user.setKarmaPoint(user.getKarmaPoint() - 8);
+                userRepository.save(user);
                 return reviewRepository.save(review);
             }
             else

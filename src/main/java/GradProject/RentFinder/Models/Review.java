@@ -71,4 +71,10 @@ public class Review extends Comment{
     public Long getReviewerID(){
         return reviewer.getUserID();
     }
+    public String getReviewerName(){
+        return(reviewer.getName() + " " + reviewer.getSurname());
+    }
+    public int getReviewerKarma(){
+        return reviewer.getKarmaPoint();
+    }
 }

@@ -55,4 +55,7 @@ public class Reservation {
     public String getPhoneNumber(){
         return reserver.getPhoneNumber();
     }
+    public int getReserverKarma(){
+        return reserver.getKarmaPoint();
+    }
 }

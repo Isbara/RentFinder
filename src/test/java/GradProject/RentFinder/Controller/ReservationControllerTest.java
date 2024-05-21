@@ -78,6 +78,7 @@ public class ReservationControllerTest {
         JSONObject reservationJson = new JSONObject(contentAsStringReservation);
         reservationJson.remove("propertyID");
         reservationJson.remove("phoneNumber");
+        reservationJson.remove("reserverKarma");
         contentAsStringReservation = reservationJson.toString();
         this.reservation = objectMapper.readValue(contentAsStringReservation, Reservation.class);
     }

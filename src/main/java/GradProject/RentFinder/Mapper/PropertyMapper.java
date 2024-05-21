@@ -24,16 +24,18 @@ public class PropertyMapper {
         List<Image> images = new ArrayList<>();
 
         // Iterate over the images using a traditional for loop
-        List<String> imageDataList = request.getImages();
-        for (String imageData : imageDataList) {
+        if(request.getImages()!=null) {
+            List<String> imageDataList = request.getImages();
+            for (String imageData : imageDataList) {
                 byte[] imageDataBytes = Base64.getDecoder().decode(imageData);
                 Image image = new Image();
                 image.setData(imageDataBytes);
                 image.setProperty(property);
                 images.add(image);
-        }
+            }
 
-        property.setImages(images);
+            property.setImages(images);
+        }
         return property;
     }
 
@@ -96,21 +98,22 @@ public class PropertyMapper {
         existingProperty.setDescription(updatedProperty.getDescription());
         existingProperty.setPrice(updatedProperty.getPrice());
         existingProperty.setPlaceOffers(updatedProperty.getPlaceOffers());
+        if (updatedProperty.getImages() != null) {
+            // Clear existing images
+            existingProperty.getImages().clear();
 
-        // Clear existing images
-        existingProperty.getImages().clear();
-
-        // Convert each image data string to a byte array and update the existing property's images
-        for (String imageData : updatedProperty.getImages()) {
-            try {
-                byte[] imageDataBytes = Base64.getDecoder().decode(imageData);
-                Image image = new Image();
-                image.setData(imageDataBytes);
-                image.setProperty(existingProperty); // Set the property reference for each image
-                existingProperty.getImages().add(image);
-            } catch (IllegalArgumentException e) {
-                // Handle invalid base64 data
-                // Log the error or throw an exception based on your application's error handling strategy
+            // Convert each image data string to a byte array and update the existing property's images
+            for (String imageData : updatedProperty.getImages()) {
+                try {
+                    byte[] imageDataBytes = Base64.getDecoder().decode(imageData);
+                    Image image = new Image();
+                    image.setData(imageDataBytes);
+                    image.setProperty(existingProperty); // Set the property reference for each image
+                    existingProperty.getImages().add(image);
+                } catch (IllegalArgumentException e) {
+                    // Handle invalid base64 data
+                    // Log the error or throw an exception based on your application's error handling strategy
+                }
             }
         }
     }

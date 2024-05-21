@@ -7,10 +7,7 @@ import GradProject.RentFinder.RequestModel.UserRequest;
 import GradProject.RentFinder.Service.PropertyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +31,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PropertyControllerTest {
 
     @Mock
-    private PropertyService propertyService;
+    PropertyService propertyService;
 
     @Autowired
     MockMvc mockMvc;
@@ -65,6 +63,7 @@ public class PropertyControllerTest {
         this.property = objectMapper.readValue(contentAsStringProperty, Property.class);
     }
     @Test
+    @Order(1)
     public void testAddProperty() throws Exception {
         // Mock service response
         PropertyRequest request = new PropertyRequest();
@@ -81,9 +80,10 @@ public class PropertyControllerTest {
                 .andExpect(jsonPath("$.propertyID").value(2));
     }
     @Test
+    @Order(5)
     public void testGetAllProperties() throws Exception {
         // Mock service response
-        List<Property> properties = Collections.singletonList(new Property());
+        List<Property> properties = Collections.singletonList(this.property);
         when(propertyService.getAllProperties()).thenReturn(properties);
 
         // Perform GET request and verify response
@@ -95,6 +95,7 @@ public class PropertyControllerTest {
     }
 
     @Test
+    @Order(7)
     public void testDeleteProperty() throws Exception {
         when(propertyService.deleteProperty(anyLong())).thenReturn("Property was deleted successfully");
 
@@ -105,18 +106,7 @@ public class PropertyControllerTest {
     }
 
     @Test
-    public void testUpdateProperty() throws Exception {
-        when(propertyService.updateProperty(anyLong(), any(PropertyRequest.class))).thenReturn("Property is updated");
-
-        // Perform PUT request and verify response
-        mockMvc.perform(MockMvcRequestBuilders.put("/property/updateProperty/1").header("Authorization", this.token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(new PropertyRequest())))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Property is updated"));
-    }
-
-    @Test
+    @Order(3)
     public void testGetPropertyDetails() throws Exception {
         // Mock service response
         Property property = new Property();
@@ -130,6 +120,7 @@ public class PropertyControllerTest {
     }
 
     @Test
+    @Order(6)
     public void testGetUserProperties() throws Exception {
         // Mock service response
         List<Property> properties = Collections.singletonList(new Property());
@@ -144,6 +135,7 @@ public class PropertyControllerTest {
     }
 
     @Test
+    @Order(4)
     public void testGetPropertyReservations() throws Exception {
         // Mock service response
         List<Reservation> reservations = Collections.singletonList(new Reservation());
@@ -155,6 +147,19 @@ public class PropertyControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0]").doesNotExist());
+    }
+
+    @Test
+    @Order(2)
+    public void testUpdateProperty() throws Exception {
+        when(propertyService.updateProperty(anyLong(), any(PropertyRequest.class))).thenReturn("Property is updated");
+
+        // Perform PUT request and verify response
+        mockMvc.perform(MockMvcRequestBuilders.put("/property/updateProperty/1").header("Authorization", this.token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(new PropertyRequest())))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Property is updated"));
     }
 
     // Utility method to convert object to JSON string

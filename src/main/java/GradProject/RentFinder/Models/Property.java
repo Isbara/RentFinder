@@ -57,4 +57,12 @@ public class Property {
     @JsonIgnore
     private User owner;
 
+    public Property(char propertyType, int flatNo, String address, String description, int price, String placeOffers) {
+        this.propertyType = propertyType;
+        this.flatNo = flatNo;
+        this.address = address;
+        this.description = description;
+        this.price = price;
+        this.placeOffers = placeOffers;
+    }
 }

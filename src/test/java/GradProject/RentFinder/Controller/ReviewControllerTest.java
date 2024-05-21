@@ -18,10 +18,7 @@ import GradProject.RentFinder.SecurityConfig.JwtService;
 import GradProject.RentFinder.Service.ReviewService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ReviewControllerTest {
 
     @Mock
@@ -53,11 +52,9 @@ public class ReviewControllerTest {
     UserRepository userRepository;
     @Mock
     UserMapper userMapper;
-    static Integer x = 0;
 
-    @BeforeEach
+    @BeforeAll
     public void setup() throws Exception {
-        x+=1;
         UserRequest userRequest = new UserRequest("John", "Doe", "john.doe@example.com", "123", "1234567890", new Date());
         String requestBody = asJsonString(userRequest);
         this.mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/user/register").contentType(MediaType.APPLICATION_JSON).content(requestBody));
@@ -81,14 +78,27 @@ public class ReviewControllerTest {
 
         ReservationRequest reservationRequest = new ReservationRequest(5,new Date(2024,12,20), new Date(2024,12,31));
         String requestReservationBody = asJsonString(reservationRequest);
-        ResultActions resultActionsReservation = this.mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/reservation/makeReservation/" + x.toString()).contentType(MediaType.APPLICATION_JSON).header("Authorization", this.token).content(requestReservationBody));
+        ResultActions resultActionsReservation = this.mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/reservation/makeReservation/" + 1).contentType(MediaType.APPLICATION_JSON).header("Authorization", this.token).content(requestReservationBody));
         MvcResult mvcResultReservation = resultActionsReservation.andDo(print()).andReturn();
         String contentAsStringReservation = mvcResultReservation.getResponse().getContentAsString();
         JSONObject reservationJson = new JSONObject(contentAsStringReservation);
         reservationJson.remove("propertyID");
         reservationJson.remove("phoneNumber");
+        reservationJson.remove("reserverKarma");
         contentAsStringReservation = reservationJson.toString();
         this.reservation = objectMapper.readValue(contentAsStringReservation, Reservation.class);
+
+        ReservationRequest reservationRequest2 = new ReservationRequest(5,new Date(2024,12,20), new Date(2024,12,31));
+        String requestReservationBody2= asJsonString(reservationRequest2);
+        ResultActions resultActionsReservation2 = this.mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/reservation/makeReservation/" + 1).contentType(MediaType.APPLICATION_JSON).header("Authorization", this.token).content(requestReservationBody2));
+        MvcResult mvcResultReservation2 = resultActionsReservation2.andDo(print()).andReturn();
+        String contentAsStringReservation2 = mvcResultReservation2.getResponse().getContentAsString();
+        JSONObject reservationsJon2 = new JSONObject(contentAsStringReservation2);
+        reservationsJon2.remove("propertyID");
+        reservationsJon2.remove("phoneNumber");
+        reservationsJon2.remove("reserverKarma");
+        contentAsStringReservation2 = reservationsJon2.toString();
+        this.reservation = objectMapper.readValue(contentAsStringReservation2, Reservation.class);
 
         ReviewRequest reviewRequest = new ReviewRequest();
         reviewRequest.setDescription("Great place");
@@ -96,7 +106,7 @@ public class ReviewControllerTest {
         reviewRequest.setUserScore(5);
         reviewRequest.setAlgoResult(true);
         String requestReviewBody = asJsonString(reviewRequest);
-        ResultActions resultActionsReview = this.mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/review/" + x.toString() + "/" + x.toString()).contentType(MediaType.APPLICATION_JSON).header("Authorization", this.token).content(requestReviewBody));
+        ResultActions resultActionsReview = this.mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/review/" + 1 + "/" + 1).contentType(MediaType.APPLICATION_JSON).header("Authorization", this.token).content(requestReviewBody));
         MvcResult mvcResultReview = resultActionsReview.andDo(print()).andReturn();
         String contentAsStringReview = mvcResultReview.getResponse().getContentAsString();
         JSONObject reviewJson = new JSONObject(contentAsStringReview);
@@ -106,12 +116,15 @@ public class ReviewControllerTest {
         reviewJson.remove("reservationID");
         reviewJson.remove("reviewer");
         reviewJson.remove("reviewerID");
+        reviewJson.remove("reviewerName");
+        reviewJson.remove("reviewerKarma");
         contentAsStringReview = reviewJson.toString();
         this.review = objectMapper.readValue(contentAsStringReview, Review.class);
 
     }
 
     @Test
+    @Order(2)
     public void testGetPropertyReviews() throws Exception {
         // Mock service response
         List<Review> reviews = Collections.singletonList(review);
@@ -126,27 +139,33 @@ public class ReviewControllerTest {
     }
 
     @Test
+    @Order(1)
     public void testWriteReview() throws Exception {
+        ReviewRequest reviewRequest = new ReviewRequest();
+        reviewRequest.setDescription("Great place!");
+        reviewRequest.setDate(new Date());
+        reviewRequest.setUserScore(5);
         // Mock service response
-        when(reviewService.WriteReview(anyString(), anyLong(), anyLong(), any(ReviewRequest.class))).thenReturn(review);
+        when(reviewService.WriteReview(eq(this.token), eq(1L), eq(2L), eq(reviewRequest))).thenReturn(this.review);
 
         // Perform POST request and verify response
-        mockMvc.perform(MockMvcRequestBuilders.post("/review/3/3")
+        mockMvc.perform(MockMvcRequestBuilders.post("/review/1/2")
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(new ReviewRequest())))
+                        .content(asJsonString(reviewRequest)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.commentID").value(3));
+                .andExpect(jsonPath("$.commentID").value(2));
     }
 
     @Test
+    @Order(3)
     public void testWriteRespond() throws Exception {
         // Mock service response
         when(reviewService.WriteRespond(anyString(), anyLong(), any(RespondRequest.class))).thenReturn(respond);
 
         // Perform POST request and verify response
-        mockMvc.perform(MockMvcRequestBuilders.post("/review/response/2")
+        mockMvc.perform(MockMvcRequestBuilders.post("/review/response/1")
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(new RespondRequest())))

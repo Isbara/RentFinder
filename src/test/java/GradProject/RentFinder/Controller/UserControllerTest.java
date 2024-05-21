@@ -67,14 +67,14 @@ public class UserControllerTest {
     @Test
     public void testLoginUser() throws Exception {
         UserRequest userRequest = new UserRequest("john.doe@example.com", "123");
-        AuthResponse authResponse = new AuthResponse("JWT_TOKEN");
+        AuthResponse authResponse = new AuthResponse(this.token.substring(7));
         when(userService.Login(any(UserRequest.class))).thenReturn(authResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/user/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(userRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.token").value(authResponse));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.token").value(authResponse.getToken()));
     }
 
     @Test

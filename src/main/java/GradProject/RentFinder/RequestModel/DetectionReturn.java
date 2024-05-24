@@ -5,12 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class ReviewRequest extends CommentRequest{
-    private int userScore;
+public class DetectionReturn {
     private boolean fakeResult;
     private boolean sentimentResult;
+
 }

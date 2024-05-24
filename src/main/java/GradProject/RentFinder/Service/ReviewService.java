@@ -5,6 +5,7 @@ import GradProject.RentFinder.Exception.Exceptions;
 import GradProject.RentFinder.Mapper.*;
 import GradProject.RentFinder.Models.*;
 import GradProject.RentFinder.Repository.*;
+import GradProject.RentFinder.RequestModel.DetectionReturn;
 import GradProject.RentFinder.RequestModel.RespondRequest;
 import GradProject.RentFinder.RequestModel.ReviewRequest;
 import GradProject.RentFinder.SecurityConfig.JwtService;
@@ -74,9 +75,11 @@ public class ReviewService {
                 review.setReviewer(user);
                 review.setUserScore(request.getUserScore());
                 RestTemplate restTemplate = new RestTemplate();
-                Review scannedReview = restTemplate.postForObject("http://localhost:5000/detection_server", review, Review.class);
-                review.setAlgoResult(scannedReview.isAlgoResult());
-                if (review.isAlgoResult())
+                DetectionReturn detectionReturn = restTemplate.postForObject("http://localhost:5000/detection_server", review, DetectionReturn.class);
+                assert detectionReturn != null;
+                review.setFakeResult(detectionReturn.isFakeResult());
+                review.setSentimentResult(detectionReturn.isSentimentResult());
+                if (review.isFakeResult())
                     user.setKarmaPoint(user.getKarmaPoint() + 4);
                 else
                     user.setKarmaPoint(user.getKarmaPoint() - 8);

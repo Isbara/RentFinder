@@ -17,8 +17,10 @@ import java.util.List;
 public class Review extends Comment{
     @Column(name = "USER_SCORE")
     private int userScore;
-    @Column(name = "ALGO_RESULT")
-    private boolean algoResult;
+    @Column(name = "FAKE_RESULT")
+    private boolean fakeResult;
+    @Column(name = "SENTIMENT_RESULT")
+    private boolean sentimentResult;
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Respond> respondList = new ArrayList<Respond>();
     @ManyToOne(fetch = FetchType.EAGER)

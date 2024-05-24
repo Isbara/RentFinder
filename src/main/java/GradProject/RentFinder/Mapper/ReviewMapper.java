@@ -12,7 +12,8 @@ public class ReviewMapper {
         review.setDescription(request.getDescription());
         review.setDate(request.getDate());
         review.setUserScore(request.getUserScore());
-        review.setAlgoResult(request.isAlgoResult());
+        review.setFakeResult(request.isFakeResult());
+        review.setSentimentResult(request.isSentimentResult());
         return review;
     }
     public ReviewRequest ConvertToRequest(Review review){
@@ -20,7 +21,8 @@ public class ReviewMapper {
         request.setDescription(review.getDescription());
         request.setDate(review.getDate());
         request.setUserScore(review.getUserScore());
-        request.setAlgoResult(review.isAlgoResult());
+        request.setFakeResult(review.isFakeResult());
+        request.setSentimentResult(review.isSentimentResult());
         return request;
     }
     public Review ConvertOptional(Optional<Review> model){
@@ -29,7 +31,8 @@ public class ReviewMapper {
         review.setDescription(model.get().getDescription());
         review.setDate(model.get().getDate());
         review.setUserScore(model.get().getUserScore());
-        review.setAlgoResult(model.get().isAlgoResult());
+        review.setFakeResult(model.get().isFakeResult());
+        review.setSentimentResult(model.get().isSentimentResult());
         review.setRespondList(model.get().getRespondList());
         review.setProperty(model.get().getProperty());
         return review;

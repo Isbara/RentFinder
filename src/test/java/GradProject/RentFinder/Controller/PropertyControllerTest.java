@@ -3,12 +3,12 @@ package GradProject.RentFinder.Controller;
 import GradProject.RentFinder.Models.Property;
 import GradProject.RentFinder.Models.Reservation;
 import GradProject.RentFinder.RequestModel.PropertyRequest;
+import GradProject.RentFinder.RequestModel.ReservationRequest;
 import GradProject.RentFinder.RequestModel.UserRequest;
 import GradProject.RentFinder.Service.PropertyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,6 +41,7 @@ public class PropertyControllerTest {
     MockMvc mockMvc;
     Property property;
     String token;
+    Reservation reservation;
     @BeforeAll
     public void setup() throws Exception {
         UserRequest userRequest = new UserRequest("John", "Doe", "john.doe@example.com", "123", "1234567890", new Date());
@@ -61,16 +62,26 @@ public class PropertyControllerTest {
         String contentAsStringProperty = mvcResultProperty.getResponse().getContentAsString();
         ObjectMapper objectMapper = new ObjectMapper();
         this.property = objectMapper.readValue(contentAsStringProperty, Property.class);
+
+        ReservationRequest reservationRequest = new ReservationRequest(5,new Date(2024,12,20), new Date(2024,12,31));
+        String requestReservationBody = asJsonString(reservationRequest);
+        ResultActions resultActionsReservation = this.mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/reservation/makeReservation/1").contentType(MediaType.APPLICATION_JSON).header("Authorization", this.token).content(requestReservationBody));
+        MvcResult mvcResultReservation = resultActionsReservation.andDo(print()).andReturn();
+        String contentAsStringReservation = mvcResultReservation.getResponse().getContentAsString();
+        JSONObject reservationJson = new JSONObject(contentAsStringReservation);
+        reservationJson.remove("propertyID");
+        reservationJson.remove("phoneNumber");
+        reservationJson.remove("reserverKarma");
+        contentAsStringReservation = reservationJson.toString();
+        this.reservation = objectMapper.readValue(contentAsStringReservation, Reservation.class);
     }
     @Test
     @Order(1)
     public void testAddProperty() throws Exception {
-        // Mock service response
         PropertyRequest request = new PropertyRequest();
         Property property = new Property();
         when(propertyService.addProperty(any(), any(PropertyRequest.class))).thenReturn(property);
 
-        // Perform POST request and verify response
         mockMvc.perform(MockMvcRequestBuilders.post("/property/addProperty")
                         .header("Authorization", this.token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -82,11 +93,9 @@ public class PropertyControllerTest {
     @Test
     @Order(5)
     public void testGetAllProperties() throws Exception {
-        // Mock service response
         List<Property> properties = Collections.singletonList(this.property);
         when(propertyService.getAllProperties()).thenReturn(properties);
 
-        // Perform GET request and verify response
         mockMvc.perform(MockMvcRequestBuilders.get("/property/getProperties"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -99,7 +108,6 @@ public class PropertyControllerTest {
     public void testDeleteProperty() throws Exception {
         when(propertyService.deleteProperty(anyLong())).thenReturn("Property was deleted successfully");
 
-        // Perform DELETE request and verify response
         mockMvc.perform(MockMvcRequestBuilders.delete("/property/deleteProperty/1").header("Authorization", this.token))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Property was deleted successfully"));
@@ -108,11 +116,9 @@ public class PropertyControllerTest {
     @Test
     @Order(3)
     public void testGetPropertyDetails() throws Exception {
-        // Mock service response
         Property property = new Property();
         when(propertyService.getPropertyDetails(anyLong())).thenReturn(property);
 
-        // Perform GET request and verify response
         mockMvc.perform(MockMvcRequestBuilders.get("/property/getPropertyDetails/1").header("Authorization", this.token))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -122,11 +128,9 @@ public class PropertyControllerTest {
     @Test
     @Order(6)
     public void testGetUserProperties() throws Exception {
-        // Mock service response
         List<Property> properties = Collections.singletonList(new Property());
         when(propertyService.getUserProperties(any())).thenReturn(properties);
 
-        // Perform GET request and verify response
         mockMvc.perform(MockMvcRequestBuilders.get("/property/getUserProperties").header("Authorization", this.token))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -137,16 +141,14 @@ public class PropertyControllerTest {
     @Test
     @Order(4)
     public void testGetPropertyReservations() throws Exception {
-        // Mock service response
-        List<Reservation> reservations = Collections.singletonList(new Reservation());
+        List<Reservation> reservations = Collections.singletonList(this.reservation);
         when(propertyService.GetPropertyReservations(any(), anyLong())).thenReturn(reservations);
 
-        // Perform GET request and verify response
         mockMvc.perform(MockMvcRequestBuilders.get("/property/getReservations/1").header("Authorization", this.token))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0]").doesNotExist());
+                .andExpect(jsonPath("$[0].reservationID").value(this.reservation.getReservationID()));
     }
 
     @Test
@@ -154,7 +156,6 @@ public class PropertyControllerTest {
     public void testUpdateProperty() throws Exception {
         when(propertyService.updateProperty(anyLong(), any(PropertyRequest.class))).thenReturn("Property is updated");
 
-        // Perform PUT request and verify response
         mockMvc.perform(MockMvcRequestBuilders.put("/property/updateProperty/1").header("Authorization", this.token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(new PropertyRequest())))
@@ -162,7 +163,6 @@ public class PropertyControllerTest {
                 .andExpect(content().string("Property is updated"));
     }
 
-    // Utility method to convert object to JSON string
     private String asJsonString(final Object obj) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();

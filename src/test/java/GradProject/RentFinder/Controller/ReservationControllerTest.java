@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -85,10 +84,8 @@ public class ReservationControllerTest {
 
     @Test
     public void testMakeReservation() throws Exception {
-        // Mock service response
         when(reservationService.MakeReservation(anyString(), anyLong(), any(ReservationRequest.class))).thenReturn(reservation);
 
-        // Perform POST request and verify response
         mockMvc.perform(MockMvcRequestBuilders.post("/reservation/makeReservation/1")
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -100,11 +97,9 @@ public class ReservationControllerTest {
 
     @Test
     public void testGetReservations() throws Exception {
-        // Mock service response
         List<Reservation> reservations = Collections.singletonList(reservation);
         when(reservationService.GetReservations(anyString(), anyLong())).thenReturn(reservations);
 
-        // Perform GET request and verify response
         mockMvc.perform(MockMvcRequestBuilders.get("/reservation/getReservation/1").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -114,10 +109,8 @@ public class ReservationControllerTest {
 
     @Test
     public void testMakeStatusDecisionForReservation() throws Exception {
-        // Mock service response
         doNothing().when(reservationService).MakeDecisionForStatus(eq(this.reservation.getReservationID()), eq(true));
 
-        // Perform PUT request and verify response
         mockMvc.perform(MockMvcRequestBuilders.put("/reservation/status/1").contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
                         .content(asJsonString(true)))
@@ -126,10 +119,8 @@ public class ReservationControllerTest {
 
     @Test
     public void testMakeApprovalDecisionForReservation() throws Exception {
-        // Mock service response
         doNothing().when(reservationService).MakeDecisionForApproval(eq(this.reservation.getReservationID()), eq(true), eq(this.token));
 
-        // Perform PUT request and verify response
         mockMvc.perform(MockMvcRequestBuilders.put("/reservation/approval/1").header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("true")) // Send appropriate boolean value as content
@@ -139,11 +130,9 @@ public class ReservationControllerTest {
 
     @Test
     public void testGetAllPropertyReservations() throws Exception {
-        // Mock service response
         List<Reservation> reservations = Collections.singletonList(reservation);
         when(reservationService.GetAllPropertyReservations(anyString())).thenReturn(reservations);
 
-        // Perform GET request and verify response
         mockMvc.perform(MockMvcRequestBuilders.get("/reservation/getAllPropertyReservations").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -153,11 +142,9 @@ public class ReservationControllerTest {
 
     @Test
     public void testGetAllUserReservations() throws Exception {
-        // Mock service response
         List<Reservation> reservations = Collections.singletonList(reservation);
         when(reservationService.GetAllUserReservations(anyString())).thenReturn(reservations);
 
-        // Perform GET request and verify response
         mockMvc.perform(MockMvcRequestBuilders.get("/reservation/getAllUserReservations").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -165,7 +152,6 @@ public class ReservationControllerTest {
                 .andExpect(jsonPath("$[0]").exists());
     }
 
-    // Utility method to convert object to JSON string
     private String asJsonString(final Object obj) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();

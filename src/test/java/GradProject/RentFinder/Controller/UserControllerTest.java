@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -81,7 +80,7 @@ public class UserControllerTest {
     public void testGetUserDetails() throws Exception {
         User user = new User();
         user.setEmail("john.doe@example.com");
-        user.setPassword("password");
+        user.setPassword("123");
         when(userService.UserDetails(token)).thenReturn(user);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/user/getUserDetails")

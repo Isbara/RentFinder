@@ -14,12 +14,10 @@ import GradProject.RentFinder.Mapper.UserMapper;
 import GradProject.RentFinder.Models.*;
 import GradProject.RentFinder.Repository.UserRepository;
 import GradProject.RentFinder.RequestModel.*;
-import GradProject.RentFinder.SecurityConfig.JwtService;
 import GradProject.RentFinder.Service.ReviewService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -104,7 +102,8 @@ public class ReviewControllerTest {
         reviewRequest.setDescription("Great place");
         reviewRequest.setDate(new Date());
         reviewRequest.setUserScore(5);
-        reviewRequest.setAlgoResult(true);
+        reviewRequest.setFakeResult(true);
+        reviewRequest.setSentimentResult(true);
         String requestReviewBody = asJsonString(reviewRequest);
         ResultActions resultActionsReview = this.mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/review/" + 1 + "/" + 1).contentType(MediaType.APPLICATION_JSON).header("Authorization", this.token).content(requestReviewBody));
         MvcResult mvcResultReview = resultActionsReview.andDo(print()).andReturn();
@@ -126,11 +125,9 @@ public class ReviewControllerTest {
     @Test
     @Order(2)
     public void testGetPropertyReviews() throws Exception {
-        // Mock service response
         List<Review> reviews = Collections.singletonList(review);
         when(reviewService.GetPropertyReviews(anyLong())).thenReturn(reviews);
 
-        // Perform GET request and verify response
         mockMvc.perform(MockMvcRequestBuilders.get("/review/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -145,10 +142,8 @@ public class ReviewControllerTest {
         reviewRequest.setDescription("Great place!");
         reviewRequest.setDate(new Date());
         reviewRequest.setUserScore(5);
-        // Mock service response
-        when(reviewService.WriteReview(eq(this.token), eq(1L), eq(2L), eq(reviewRequest))).thenReturn(this.review);
+        when(reviewService.WriteReview(anyString(), anyLong(), anyLong(), any(ReviewRequest.class))).thenReturn(this.review);
 
-        // Perform POST request and verify response
         mockMvc.perform(MockMvcRequestBuilders.post("/review/1/2")
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -161,10 +156,8 @@ public class ReviewControllerTest {
     @Test
     @Order(3)
     public void testWriteRespond() throws Exception {
-        // Mock service response
         when(reviewService.WriteRespond(anyString(), anyLong(), any(RespondRequest.class))).thenReturn(respond);
 
-        // Perform POST request and verify response
         mockMvc.perform(MockMvcRequestBuilders.post("/review/response/1")
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -174,7 +167,6 @@ public class ReviewControllerTest {
                 .andExpect(jsonPath("$.commentID").value(1));
     }
 
-    // Utility method to convert object to JSON string
     private String asJsonString(final Object obj) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();

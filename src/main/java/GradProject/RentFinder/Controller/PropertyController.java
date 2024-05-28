@@ -1,5 +1,6 @@
 package GradProject.RentFinder.Controller;
 
+import GradProject.RentFinder.Mapper.PropertyMapper;
 import GradProject.RentFinder.Models.Property;
 import GradProject.RentFinder.RequestModel.PropertyRequest;
 import GradProject.RentFinder.Service.PropertyService;
@@ -20,7 +21,9 @@ public class PropertyController{
 
     @GetMapping("/getProperties")
     public ResponseEntity<List<Property>> getAllProperties() {
-        return ResponseEntity.ok().body(propertyService.getAllProperties());
+        List<Property> properties = propertyService.getAllProperties();
+        List<Property> decompressed_properties= PropertyMapper.Decompresser(properties);
+        return ResponseEntity.ok().body(decompressed_properties);
     }
     @PostMapping("/addProperty")
     public ResponseEntity<?> addProperty(@RequestHeader(value = "Authorization") String token, @RequestBody PropertyRequest request) {
@@ -42,11 +45,17 @@ public class PropertyController{
 
     @GetMapping("/getPropertyDetails/{propertyId}")
     public ResponseEntity<Property> GetPropertyDetails(@PathVariable Long propertyId){
-        return ResponseEntity.ok().body(propertyService.getPropertyDetails(propertyId));
+
+        Property properties = propertyService.getPropertyDetails(propertyId);
+        List<Property> decompressed_properties= PropertyMapper.Decompresser((List<Property>) properties);
+        return ResponseEntity.ok().body((Property) decompressed_properties);
+        
     }
     @GetMapping("/getUserProperties")
     public ResponseEntity<List<Property>> GetUserProperties(@RequestHeader(value = "Authorization") String token){
-        return ResponseEntity.ok().body(propertyService.getUserProperties(token));
+        List<Property> properties = propertyService.getUserProperties(token);
+        List<Property> decompressed_properties= PropertyMapper.Decompresser(properties);
+        return ResponseEntity.ok().body(decompressed_properties);
     }
 
 }

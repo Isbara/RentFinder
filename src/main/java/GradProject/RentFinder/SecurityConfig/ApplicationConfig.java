@@ -1,7 +1,7 @@
 package GradProject.RentFinder.SecurityConfig;
 
 import GradProject.RentFinder.Repository.UserRepository;
-import jakarta.validation.constraints.Email;
+import javax.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

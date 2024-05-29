@@ -71,8 +71,7 @@ public class PropertyMapper {
         return property;
     }
 
-    public static List<Property> Decompresser(List<Property> existingProperties) {
-        List<Property> decompressedProperties = new ArrayList<>();
+    public static List<Property> Decompresser(List<Property> existingProperties) {List<Property> decompressedProperties = new ArrayList<>();
         for (Property existingProperty : existingProperties) {
             Property property = new Property();
             property.setPropertyID(existingProperty.getPropertyID());

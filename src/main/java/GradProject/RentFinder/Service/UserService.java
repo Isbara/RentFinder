@@ -9,6 +9,7 @@ import GradProject.RentFinder.Repository.UserRepository;
 import GradProject.RentFinder.RequestModel.UserRequest;
 import GradProject.RentFinder.SecurityConfig.AuthResponse;
 import GradProject.RentFinder.SecurityConfig.JwtService;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
@@ -29,6 +31,8 @@ public class UserService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+
+    @Transactional
 
     public String CreateUser(UserRequest user){
         List<User> allUsers =userRepository.findAll();
@@ -58,6 +62,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public AuthResponse Login(UserRequest credentials) {
         try{authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(credentials.getEmail(),credentials.getPassword()));} //Throws exception if password is incorrect so added exception handling
         catch (AuthenticationException e)
@@ -76,6 +81,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public User UserDetails(String token) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.isAuthenticated()){
@@ -92,6 +98,7 @@ public class UserService {
         else
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
+    @Transactional
 
     public String UpdateUser(String token, UserRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -124,8 +131,7 @@ public class UserService {
             throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
         }
     }
-
-
+    @Transactional
     public String DeleteUser(String token) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.isAuthenticated()) {

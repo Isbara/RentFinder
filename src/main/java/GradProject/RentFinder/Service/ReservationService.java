@@ -13,6 +13,7 @@ import GradProject.RentFinder.Repository.ReservationRepository;
 import GradProject.RentFinder.Repository.UserRepository;
 import GradProject.RentFinder.RequestModel.ReservationRequest;
 import GradProject.RentFinder.SecurityConfig.JwtService;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,6 +33,8 @@ public class ReservationService {
     private final ReservationMapper reservationMapper;
     private final PropertyRepository propertyRepository;
     private final PropertyMapper propertyMapper;
+    @Transactional
+
     public Reservation MakeReservation(String token, Long id, ReservationRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.isAuthenticated()){
@@ -53,6 +56,8 @@ public class ReservationService {
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
+    @Transactional
+
     public List<Reservation> GetReservations(String token, Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.isAuthenticated()){
@@ -69,12 +74,15 @@ public class ReservationService {
         else
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
+    @Transactional
+
     public Boolean ValidateReservation(Long reservationId) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
 
         return optionalReservation.isPresent();
     }
 
+    @Transactional
 
     public Boolean ValidateProperty(Long propertyId)
     {
@@ -82,6 +90,7 @@ public class ReservationService {
         return optionalProperty.isPresent();
 
     }
+    @Transactional
 
     public List<Reservation> GetAllPropertyReservations(String token) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -103,6 +112,7 @@ public class ReservationService {
         else
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
+    @Transactional
 
     public void MakeDecisionForApproval(Long reservationId,Boolean approval_decision,String token) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -114,6 +124,8 @@ public class ReservationService {
         else
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
+
+    @Transactional
 
     public void MakeDecisionForStatus(Long reservationId,Boolean status_decision)
     {
@@ -127,6 +139,8 @@ public class ReservationService {
             }
         }
     }
+    @Transactional
+
     public List<Reservation> GetAllUserReservations(String token) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.isAuthenticated()){

@@ -1,14 +1,16 @@
 package GradProject.RentFinder.Repository;
 
 import GradProject.RentFinder.Models.Reservation;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     //This query needs the addition of decision value based on Boolean or boolean decision.
     @Query(nativeQuery = true, value = "SELECT * FROM RESERVATION_TABLE WHERE USER_ID = :userID AND PROPERTY_ID = :propertyID")

@@ -2,7 +2,7 @@ package GradProject.RentFinder.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 import java.util.Date;
@@ -28,16 +28,16 @@ public class Reservation {
     private Boolean status;
     @Column(name="APPROVAL")
     private Boolean approval;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "USER_ID")
     @ToString.Exclude
     @JsonIgnore
     private User reserver;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "PROPERTY_ID")
     @ToString.Exclude
     private Property reserved;
-    @OneToOne(mappedBy = "reservation", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Review review;
 
     @JsonIgnore

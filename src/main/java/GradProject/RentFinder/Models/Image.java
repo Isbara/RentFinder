@@ -1,9 +1,10 @@
 package GradProject.RentFinder.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
+import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "IMAGE_TABLE")
 @Data
@@ -17,10 +18,12 @@ public class Image {
     private Long imageID;
 
     @Lob
+
+    @Type(type = "org.hibernate.type.ImageType")
     @Column(name = "DATA", nullable = false)
     private byte[] data;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "PROPERTY_ID")
     @ToString.Exclude
     @JsonIgnore

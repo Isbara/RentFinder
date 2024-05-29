@@ -1,7 +1,7 @@
 package GradProject.RentFinder.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 @Entity
@@ -11,12 +11,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Respond extends Comment{
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "REVIEW_ID")
     @ToString.Exclude
     @JsonIgnore
     private Review review;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "USER_ID")
     @ToString.Exclude
     @JsonIgnore

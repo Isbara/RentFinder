@@ -1,7 +1,7 @@
 package GradProject.RentFinder.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -21,16 +21,16 @@ public class Review extends Comment{
     private boolean fakeResult;
     @Column(name = "SENTIMENT_RESULT")
     private boolean sentimentResult;
-    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Respond> respondList = new ArrayList<Respond>();
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "PROPERTY_ID")
     @ToString.Exclude
     private Property property;
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne()
     @JoinColumn(name = "RESERVATION_ID")
     private Reservation reservation;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "USER_ID")
     @ToString.Exclude
     private User reviewer;

@@ -9,6 +9,7 @@ import GradProject.RentFinder.RequestModel.DetectionReturn;
 import GradProject.RentFinder.RequestModel.RespondRequest;
 import GradProject.RentFinder.RequestModel.ReviewRequest;
 import GradProject.RentFinder.SecurityConfig.JwtService;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,7 +35,7 @@ public class ReviewService {
     private final RespondMapper respondMapper;
     private final RespondRepository respondRepository;
 
-
+    @Transactional
     public List<Review> GetPropertyReviews(Long id) {
             Optional<Property> optionalProperty = propertyRepository.findById(id);
             if(optionalProperty.isPresent())
@@ -43,6 +44,7 @@ public class ReviewService {
                 throw  new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
 
     }
+    @Transactional
 
     public Review WriteReview(String token, Long propertyID, Long reservationID, ReviewRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -92,6 +94,8 @@ public class ReviewService {
         else
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
+
+    @Transactional
 
     public Respond WriteRespond(String token, Long id, RespondRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

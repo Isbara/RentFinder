@@ -9,6 +9,7 @@ import GradProject.RentFinder.Repository.TicketRepository;
 import GradProject.RentFinder.Repository.UserRepository;
 import GradProject.RentFinder.RequestModel.TicketRequest;
 import GradProject.RentFinder.SecurityConfig.JwtService;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,7 @@ public class TicketService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    @Transactional
     public Ticket CreateTicket(String token, TicketRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.isAuthenticated()) {

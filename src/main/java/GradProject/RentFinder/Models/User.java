@@ -1,6 +1,6 @@
 package GradProject.RentFinder.Models;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,15 +40,15 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name="ROLE")
     private Role role;
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Property> properties = new ArrayList<Property>();
-    @OneToMany(mappedBy = "reserver", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "reserver", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<Reservation>();
-    @OneToMany(mappedBy = "submitter", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "submitter", cascade = CascadeType.REMOVE, orphanRemoval =true )
     private List<Ticket> tickets = new ArrayList<Ticket>();
-    @OneToMany(mappedBy="reviewer",cascade=CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="reviewer",cascade=CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> comments=new ArrayList<Review>();
-    @OneToMany(mappedBy="responder",cascade=CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="responder",cascade=CascadeType.REMOVE, orphanRemoval = true )
     private List<Respond> responds=new ArrayList<Respond>();
 
 

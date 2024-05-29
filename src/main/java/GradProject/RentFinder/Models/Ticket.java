@@ -1,7 +1,7 @@
 package GradProject.RentFinder.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 @Entity
@@ -21,7 +21,7 @@ public class Ticket {
     private String location;
     @Column(name = "DETAILS")
     private String details;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "USER_ID")
     @ToString.Exclude
     @JsonIgnore

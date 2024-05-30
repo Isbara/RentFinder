@@ -28,7 +28,7 @@ public class UserMapper {
         request.setDateOfBirth(user.getDateOfBirth());
         return request;
     }
-    public User ConvertOptional(Optional<User> model){
+    public static User ConvertOptional(Optional<User> model){
         User user = new User();
         user.setUserID(model.get().getUserID());
         user.setName(model.get().getName());

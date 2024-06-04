@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation,Long> {
@@ -24,5 +25,6 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     @Query(nativeQuery = true, value = "UPDATE RESERVATION_TABLE SET APPROVAL = :approval_decision WHERE ID = :reservationId")
     void makeDecisionForApproval(@Param("reservationId") Long reservationId, @Param("approval_decision") Boolean approval_decision);
 
-
+    @Query(nativeQuery = true, value = "SELECT * FROM RESERVATION_TABLE WHERE PROPERTY_ID = :propertyID AND (START_DATE < :endDate AND END_DATE > :startDate)")
+    List<Reservation> findOverlappingReservations(@Param("propertyID") Long propertyID, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

@@ -1,6 +1,8 @@
 package GradProject.RentFinder.RequestModel;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -13,6 +15,7 @@ public class UserRequest {
     private String email;
     private String password;
     private String phoneNumber;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd-MM-yyyy")
     private Date dateOfBirth;
 
     public UserRequest(String email, String password) {

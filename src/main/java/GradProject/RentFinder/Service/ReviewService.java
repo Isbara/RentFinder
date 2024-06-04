@@ -77,6 +77,7 @@ public class ReviewService {
                 RestTemplate restTemplate = new RestTemplate();
                 DetectionReturn detectionReturn = restTemplate.postForObject("http://localhost:5000/detection_server", review, DetectionReturn.class);
                 assert detectionReturn != null;
+                //Sentiment analysis positive negative review increment will go somewhere here...
                 review.setFakeResult(detectionReturn.isFakeResult());
                 review.setSentimentResult(detectionReturn.isSentimentResult());
                 if (review.isFakeResult())

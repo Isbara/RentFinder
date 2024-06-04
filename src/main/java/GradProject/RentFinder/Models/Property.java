@@ -57,6 +57,12 @@ public class Property {
     @JsonIgnore
     private User owner;
 
+    @Column(name = "POSITIVE")
+    private int positiveReviews;
+    @Column(name = "NEGATIVE")
+    private int negativeReviews;
+
+
     public Property(char propertyType, int flatNo, String address, String description, int price, String placeOffers) {
         this.propertyType = propertyType;
         this.flatNo = flatNo;

@@ -43,6 +43,10 @@ public class ReservationService {
                 user = userMapper.ConvertOptional(optionalUser);
             else
                 throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            List<Reservation> overlappingReservations = reservationRepository.findOverlappingReservations(id, request.getStartDate(), request.getEndDate());
+            if (!overlappingReservations.isEmpty()) {
+                throw new Exceptions(AllExceptions.ALREADY_RESERVED);
+            }
             Reservation reservation = reservationMapper.ConvertToModel(request);
             reservation.setReserver(user);
             Property property = propertyMapper.ConvertOptional(propertyRepository.findById(id));

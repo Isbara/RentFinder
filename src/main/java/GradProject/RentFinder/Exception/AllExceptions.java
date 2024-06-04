@@ -14,7 +14,9 @@ public enum AllExceptions {
     DECISION_ERROR("An error has occured while trying to update decision"),
     NULL_ERROR("One of the values is null"),
     LOW_KARMA("User karma is too low! Can not write reviews!"),
-    ALREADY_RESERVED("There is a reservation in between given dates!");
+    ALREADY_RESERVED("There is a reservation in between given dates!"),
+    SELF_RESERVATION("You can not reserve your own property!"),
+    MULTIPLE_CLOSE_RESERVATIONS("You can not reserve multiple times in close dates!");
 
 
 

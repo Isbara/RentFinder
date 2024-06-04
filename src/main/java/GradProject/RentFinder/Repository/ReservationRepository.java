@@ -25,6 +25,8 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     @Query(nativeQuery = true, value = "UPDATE RESERVATION_TABLE SET APPROVAL = :approval_decision WHERE ID = :reservationId")
     void makeDecisionForApproval(@Param("reservationId") Long reservationId, @Param("approval_decision") Boolean approval_decision);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM RESERVATION_TABLE WHERE PROPERTY_ID = :propertyID AND (START_DATE < :endDate AND END_DATE > :startDate)")
+    @Query(nativeQuery = true, value = "SELECT * FROM RESERVATION_TABLE WHERE PROPERTY_ID = :propertyID AND APPROVAL = TRUE AND (START_DATE < :endDate AND END_DATE > :startDate)")
     List<Reservation> findOverlappingReservations(@Param("propertyID") Long propertyID, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    @Query(nativeQuery = true, value = "SELECT * FROM RESERVATION_TABLE WHERE USER_ID = :userID AND STATUS = TRUE AND (START_DATE < :bufferEndDate AND END_DATE > :bufferStartDate)")
+    List<Reservation> findUserReservationsInBufferPeriod(@Param("userID") Long userID, @Param("bufferStartDate") Date bufferStartDate, @Param("bufferEndDate") Date bufferEndDate);
 }

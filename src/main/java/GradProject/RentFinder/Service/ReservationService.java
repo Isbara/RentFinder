@@ -18,9 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -44,12 +42,31 @@ public class ReservationService {
             else
                 throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
             List<Reservation> overlappingReservations = reservationRepository.findOverlappingReservations(id, request.getStartDate(), request.getEndDate());
-            if (!overlappingReservations.isEmpty()) {
+            if (!overlappingReservations.isEmpty())
                 throw new Exceptions(AllExceptions.ALREADY_RESERVED);
+
+            Property property = propertyMapper.ConvertOptional(propertyRepository.findById(id));
+            if(property.getOwner().equals(user))
+                throw new Exceptions(AllExceptions.SELF_RESERVATION);
+
+            int bufferDays = 7;
+            Calendar cal = Calendar.getInstance();
+
+            cal.setTime(request.getStartDate());
+            cal.add(Calendar.DATE, -bufferDays);
+            Date bufferStartDate = cal.getTime();
+
+            cal.setTime(request.getEndDate());
+            cal.add(Calendar.DATE, bufferDays);
+            Date bufferEndDate = cal.getTime();
+
+            List<Reservation> userReservationsInBuffer = reservationRepository.findUserReservationsInBufferPeriod(user.getUserID(), bufferStartDate, bufferEndDate);
+            if (!userReservationsInBuffer.isEmpty()) {
+                throw new Exceptions(AllExceptions.MULTIPLE_CLOSE_RESERVATIONS);
             }
+
             Reservation reservation = reservationMapper.ConvertToModel(request);
             reservation.setReserver(user);
-            Property property = propertyMapper.ConvertOptional(propertyRepository.findById(id));
             reservation.setReserved(property);
             return reservationRepository.save(reservation);
         }

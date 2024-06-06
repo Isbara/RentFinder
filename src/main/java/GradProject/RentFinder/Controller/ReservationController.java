@@ -72,7 +72,10 @@ public class ReservationController {
     }
 
 
-
+    @GetMapping("/getReservationsForOwnedProperties")
+    public ResponseEntity<List<Reservation>> getReservationsForOwnedProperties(@RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(reservationService.getReservationsForOwnedProperties(token));
+    }
 
 
 

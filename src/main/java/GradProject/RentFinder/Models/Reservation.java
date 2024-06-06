@@ -49,12 +49,18 @@ public class Reservation {
         this.reserved = reserved;
     }
 
+    public String getAdress() {return reserved.getAddress();}
     public Long getPropertyID(){
         return reserved.getPropertyID();
     }
     public String getPhoneNumber(){
         return reserver.getPhoneNumber();
     }
+
+    public String getUserName() {return reserver.getName();}
+    public String getUserSurname() {return reserver.getSurname();}
+
+    public int getKarmaPoint() { return reserver.getKarmaPoint();}
     public int getReserverKarma(){
         return reserver.getKarmaPoint();
     }

@@ -14,7 +14,8 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     //This query needs the addition of decision value based on Boolean or boolean decision.
     @Query(nativeQuery = true, value = "SELECT * FROM RESERVATION_TABLE WHERE USER_ID = :userID AND PROPERTY_ID = :propertyID")
     List<Reservation> findByIDs(@Param("userID") Long userID, @Param("propertyID") Long propertyID);
-
+    @Query(nativeQuery = true, value = "SELECT * FROM RESERVATION_TABLE WHERE PROPERTY_ID IN (SELECT ID FROM PROPERTY_TABLE WHERE USER_ID = :userID)")
+    List<Reservation> findByPropertyUserID(@Param("userID") Long userID);
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE RESERVATION_TABLE SET STATUS = :status_decision WHERE ID = :reservationId")

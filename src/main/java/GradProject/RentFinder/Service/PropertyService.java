@@ -31,7 +31,7 @@ public class PropertyService {
     private final UserMapper userMapper;
 
     public List<Property> getAllProperties(){
-        return PropertyMapper.Decompresser(propertyRepository.findAll());
+        return propertyRepository.findAll();
     }
 
     public Property addProperty(String token, PropertyRequest request){
@@ -95,8 +95,7 @@ public class PropertyService {
             else
                 throw  new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
 
-            return PropertyMapper.Decompresser(propertyRepository.findByOwnerID(user.getUserID()));
-        }
+            return propertyRepository.findByOwnerID(user.getUserID());        }
         else{
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
         }

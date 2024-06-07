@@ -62,6 +62,8 @@ public class Property {
     @JsonIgnore
     private User owner;
 
+    public String getOwnerName() {return owner.getName();}
+    public String getOwnerSurname() {return owner.getSurname();}
 
 
     public Property(char propertyType, int flatNo, String address, String description, int price, String placeOffers, int positiveReviews, int negativeReviews) {

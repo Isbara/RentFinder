@@ -41,6 +41,11 @@ public class Property {
     @Column(name = "OFFERS")
     private String placeOffers;
 
+    @Column(name = "POSITIVE")
+    private int positiveReviews;
+    @Column(name = "NEGATIVE")
+    private int negativeReviews;
+
     // Updated to handle multiple images
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
@@ -57,18 +62,19 @@ public class Property {
     @JsonIgnore
     private User owner;
 
-    @Column(name = "POSITIVE")
-    private int positiveReviews;
-    @Column(name = "NEGATIVE")
-    private int negativeReviews;
+    public String getOwnerName() {return owner.getName();}
+    public String getOwnerSurname() {return owner.getSurname();}
 
 
-    public Property(char propertyType, int flatNo, String address, String description, int price, String placeOffers) {
+    public Property(char propertyType, int flatNo, String address, String description, int price, String placeOffers, int positiveReviews, int negativeReviews) {
         this.propertyType = propertyType;
         this.flatNo = flatNo;
         this.address = address;
         this.description = description;
         this.price = price;
         this.placeOffers = placeOffers;
+        this.positiveReviews = positiveReviews;
+        this.negativeReviews = negativeReviews;
     }
+
 }

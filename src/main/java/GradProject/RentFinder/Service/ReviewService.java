@@ -55,48 +55,63 @@ public class ReviewService {
                 user = userMapper.ConvertOptional(optionalUser);
             else
                 throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
-            if(user.getKarmaPoint()>=80) {
+
+            if(user.getKarmaPoint() >= 80) {
                 Optional<Property> optionalProperty = propertyRepository.findById(propertyID);
                 Property property;
                 if (optionalProperty.isPresent())
                     property = propertyMapper.ConvertOptional(optionalProperty);
                 else
                     throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+
                 Optional<Reservation> optionalReservation = reservationRepository.findById(reservationID);
                 Reservation reservation;
                 if (optionalReservation.isPresent())
                     reservation = reservationMapper.ConvertOptional(optionalReservation);
                 else
                     throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+
                 Review review = reviewMapper.ConvertToModel(request);
                 review.setDate(new Date(System.currentTimeMillis()));
                 review.setProperty(property);
                 review.setReservation(reservation);
                 review.setReviewer(user);
                 review.setUserScore(request.getUserScore());
+
                 RestTemplate restTemplate = new RestTemplate();
                 DetectionReturn detectionReturn = restTemplate.postForObject("http://localhost:5000/detection_server", review, DetectionReturn.class);
                 assert detectionReturn != null;
+
                 review.setFakeResult(detectionReturn.isFakeResult());
                 review.setSentimentResult(detectionReturn.isSentimentResult());
-                if (review.isFakeResult()) {
-                    user.setKarmaPoint(user.getKarmaPoint() + 4);
-                    if(review.isSentimentResult())
-                        property.setPositiveReviews(property.getPositiveReviews()+1);
-                    else
-                        property.setPositiveReviews(property.getPositiveReviews()-1);
-                }
-                else
+
+                if (!review.isFakeResult()) {
                     user.setKarmaPoint(user.getKarmaPoint() - 8);
+                } else {
+                    if(review.isSentimentResult()) {
+                        int positive_count=property.getPositiveReviews()+1;
+                        property.setPositiveReviews(positive_count);
+                    } else {
+                        int negative_count=property.getNegativeReviews()+1;
+                        property.setNegativeReviews(negative_count);
+                    }
+                    user.setKarmaPoint(user.getKarmaPoint() + 4);
+                }
+
+                // Update property reviews based on sentiment analysis
+
+
                 userRepository.save(user);
+                propertyRepository.save(property);  // Save property to update review counts
                 return reviewRepository.save(review);
-            }
-            else
+            } else {
                 throw new Exceptions(AllExceptions.LOW_KARMA);
-        }
-        else
+            }
+        } else {
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
+        }
     }
+
 
     public Respond WriteRespond(String token, Long id, RespondRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

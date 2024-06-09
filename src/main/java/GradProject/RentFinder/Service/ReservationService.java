@@ -41,13 +41,14 @@ public class ReservationService {
                 user = userMapper.ConvertOptional(optionalUser);
             else
                 throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+
+            Property property = propertyMapper.ConvertOptional(propertyRepository.findById(id));
+            if(property.getOwner().getEmail().equals(user.getEmail()))
+                throw new Exceptions(AllExceptions.SELF_RESERVATION);
+
             List<Reservation> overlappingReservations = reservationRepository.findOverlappingReservations(id, request.getStartDate(), request.getEndDate());
             if (!overlappingReservations.isEmpty())
                 throw new Exceptions(AllExceptions.ALREADY_RESERVED);
-
-            Property property = propertyMapper.ConvertOptional(propertyRepository.findById(id));
-            if(property.getOwner().equals(user))
-                throw new Exceptions(AllExceptions.SELF_RESERVATION);
 
             int bufferDays = 7;
             Calendar cal = Calendar.getInstance();

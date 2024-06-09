@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -125,15 +126,29 @@ public class ReservationService {
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
     }
 
-    public void MakeDecisionForApproval(Long reservationId,Boolean approval_decision,String token) {
+    public void MakeDecisionForApproval(Long reservationId, Boolean approval_decision, String token) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.isAuthenticated()) {
-
+            Reservation reservation;
             reservationRepository.makeDecisionForApproval(reservationId, approval_decision);
+            if (approval_decision) {
+                Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
+                if (optionalReservation.isPresent()) {
+                    reservation = reservationMapper.ConvertOptional(optionalReservation);
+                }
+                else
+                    throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
 
-        }
-        else
+                List<Reservation> overlappingUnapprovedReservations = reservationRepository.findOverlappingUnapprovedReservations(reservation.getReserved().getPropertyID(), reservation.getStartDate(), reservation.getEndDate());
+                List<Long> reservationIDs = overlappingUnapprovedReservations.stream().map(Reservation::getReservationID).collect(Collectors.toList());
+
+                if (!reservationIDs.isEmpty()) {
+                    reservationRepository.deleteReservationsByIds(reservationIDs);
+                }
+            }
+        } else {
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
+        }
     }
 
     public void MakeDecisionForStatus(Long reservationId,Boolean status_decision)

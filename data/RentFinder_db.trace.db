@@ -4571,3 +4571,9 @@ DROP TABLEPROPERTY_TABLE [42001-224]
 2024-06-07 15:02:38.074680+03:00 jdbc[23]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DROP [*]TABLEUSER_TABLE"; expected "TABLE, INDEX, USER, SEQUENCE, CONSTANT, TRIGGER, MATERIALIZED, VIEW, ROLE, ALIAS, SCHEMA, ALL OBJECTS, DOMAIN, TYPE, AGGREGATE, SYNONYM"; SQL statement:
 DROP TABLEUSER_TABLE [42001-224]
+2024-06-07 16:45:24.004988+03:00 jdbc[35]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(1024)": "'Let me begin by saying that there are two kinds of people, those who will give ... (2249)"; SQL statement:
+insert into review_table (date,description,fake_result,property_id,reservation_id,user_id,sentiment_result,user_score,id) values (?,?,?,?,?,?,?,?,?) [22001-224]
+2024-06-08 01:11:30.022876+03:00 jdbc[167]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "'Welcome to this charming 3-bedroom, 2-bathroom home in the heart of Springfield... (265)"; SQL statement:
+insert into property_table (address,description,flat_no,negative,user_id,offers,positive,price,type,id) values (?,?,?,?,?,?,?,?,?,?) [22001-224]

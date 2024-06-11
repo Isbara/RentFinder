@@ -187,4 +187,23 @@ public class ReservationService {
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
         }
     }
+
+
+    public List<Reservation> getReservationsForOwnedProperties(String token) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.isAuthenticated()) {
+            String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
+            Optional<User> optionalUser = userRepository.findByEmail(username);
+            User user;
+            if(optionalUser.isPresent()) {
+                user = UserMapper.ConvertOptional(optionalUser);
+            } else {
+                throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+            }
+            return reservationRepository.findByPropertyUserID(user.getUserID());
+        } else {
+            throw new Exceptions(AllExceptions.TOKEN_EXPIRED);
+        }
+    }
 }

@@ -47,7 +47,7 @@ public class ReservationService {
                 throw new Exceptions(AllExceptions.ALREADY_RESERVED);
 
             Property property = propertyMapper.ConvertOptional(propertyRepository.findById(id));
-            if(property.getOwner().equals(user))
+            if(property.getOwner().getUserID() == user.getUserID())
                 throw new Exceptions(AllExceptions.SELF_RESERVATION);
 
             int bufferDays = 7;

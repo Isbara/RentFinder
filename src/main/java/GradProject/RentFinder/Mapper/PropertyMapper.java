@@ -23,6 +23,7 @@ public class PropertyMapper {
         property.setPositiveReviews(0);
         property.setNegativeReviews(0);
 
+
         List<Image> images = new ArrayList<>();
 
         if (request.getImages() != null) {

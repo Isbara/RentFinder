@@ -16,7 +16,7 @@ public enum AllExceptions {
     LOW_KARMA("User karma is too low! Can not write reviews!"),
     ALREADY_RESERVED("There is a reservation in between given dates!"),
     SELF_RESERVATION("You can not reserve your own property!"),
-    MULTIPLE_CLOSE_RESERVATIONS("You can not reserve multiple times in close dates!");
+    MULTIPLE_CLOSE_RESERVATIONS("You can not make reservations in 7 days intervals!");
 
 
 

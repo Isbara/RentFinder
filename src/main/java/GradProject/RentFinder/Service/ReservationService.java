@@ -153,6 +153,17 @@ public class ReservationService {
 
             try {
                 reservationRepository.makeDecisionForStatus(reservationId, status_decision);
+                if(status_decision){
+                    Reservation reservation;
+                    Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
+                    if(optionalReservation.isPresent())
+                        reservation = reservationMapper.ConvertOptional(optionalReservation);
+                    else
+                        throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
+                    User user = reservation.getReserver();
+                    user.setKarmaPoint(user.getKarmaPoint()+2);
+                    userRepository.save(user);
+                }
             } catch (Exception e) {
                 throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
             }

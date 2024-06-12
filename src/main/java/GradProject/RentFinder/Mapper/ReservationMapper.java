@@ -30,6 +30,7 @@ public class ReservationMapper {
         reservation.setEndDate(model.get().getEndDate());
         reservation.setReserver(model.get().getReserver());
         reservation.setReserved(model.get().getReserved());
+        reservation.setDays(model.get().getDays());
         return reservation;
     }
 }

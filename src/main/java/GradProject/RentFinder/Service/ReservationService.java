@@ -69,6 +69,10 @@ public class ReservationService {
             Reservation reservation = reservationMapper.ConvertToModel(request);
             reservation.setReserver(user);
             reservation.setReserved(property);
+            long diffInMillies = reservation.getEndDate().getTime() - reservation.getStartDate().getTime();
+            long daysBetween = diffInMillies / (1000 * 60 * 60 * 24);
+
+            reservation.setDays(daysBetween);
             return reservationRepository.save(reservation);
         }
         else

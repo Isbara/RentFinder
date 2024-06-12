@@ -39,6 +39,8 @@ public class Reservation {
     private Property reserved;
     @OneToOne(mappedBy = "reservation", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private Review review;
+    @Column(name="DAYS")
+    private long days;
 
     @JsonIgnore
     public Property getReserved() {

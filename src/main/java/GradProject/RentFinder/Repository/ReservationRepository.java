@@ -35,6 +35,6 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "DELETE FROM RESERVATION_TABLE WHERE ID IN :reservationIds AND APPROVAL = FALSE")
-    void deleteReservationsByIds(@Param("reservationIds") List<Long> reservationIds);
+    @Query(nativeQuery = true, value = "DELETE FROM RESERVATION_TABLE WHERE PROPERTY_ID = :propertyID AND APPROVAL = FALSE AND (START_DATE <= :endDate AND END_DATE >= :startDate)")
+    void deleteOverlappingUnapprovedReservations(@Param("propertyID") Long propertyID, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

@@ -129,22 +129,17 @@ public class ReservationService {
     public void MakeDecisionForApproval(Long reservationId, Boolean approval_decision, String token) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.isAuthenticated()) {
-            Reservation reservation;
             reservationRepository.makeDecisionForApproval(reservationId, approval_decision);
+
             if (approval_decision) {
                 Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
-                if (optionalReservation.isPresent()) {
-                    reservation = reservationMapper.ConvertOptional(optionalReservation);
-                }
-                else
+                if (!optionalReservation.isPresent()) {
                     throw new Exceptions(AllExceptions.INTERNAL_SERVER_ERROR);
-
-                List<Reservation> overlappingUnapprovedReservations = reservationRepository.findOverlappingUnapprovedReservations(reservation.getReserved().getPropertyID(), reservation.getStartDate(), reservation.getEndDate());
-                List<Long> reservationIDs = overlappingUnapprovedReservations.stream().map(Reservation::getReservationID).collect(Collectors.toList());
-
-                if (!reservationIDs.isEmpty()) {
-                    reservationRepository.deleteReservationsByIds(reservationIDs);
                 }
+
+                Reservation approvedReservation = optionalReservation.get();
+
+                reservationRepository.deleteOverlappingUnapprovedReservations(approvedReservation.getReserved().getPropertyID(), approvedReservation.getStartDate(), approvedReservation.getEndDate());
             }
         } else {
             throw new Exceptions(AllExceptions.TOKEN_EXPIRED);

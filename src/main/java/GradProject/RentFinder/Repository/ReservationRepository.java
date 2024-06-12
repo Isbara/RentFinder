@@ -35,6 +35,6 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "DELETE FROM RESERVATION_TABLE WHERE ID IN :reservationIds")
+    @Query(nativeQuery = true, value = "DELETE FROM RESERVATION_TABLE WHERE ID IN :reservationIds AND APPROVAL = FALSE")
     void deleteReservationsByIds(@Param("reservationIds") List<Long> reservationIds);
 }

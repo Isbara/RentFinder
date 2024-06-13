@@ -63,4 +63,5 @@ public class Reservation {
     public int getReserverKarma(){
         return reserver.getKarmaPoint();
     }
+    public int getPrice(){return reserved.getPrice();}
 }
